@@ -51,6 +51,23 @@ public class Point {
         return of(c.x - (y - c.y), c.y + (x - c.x));
     }
 
+    public Point rotate(Point center, int degrees) {
+        double angle = degrees * Math.PI / 180.0;
+        double s = Math.sin(angle);
+        double c = Math.cos(angle);
+
+        // translate point back to origin:
+        long x = this.x - center.x;
+        long y = this.y - center.y;
+
+        // rotate point
+        double xNew = x * c - y * s;
+        double yNew = x * s + y * c;
+
+        // translate point back:
+        return of(Math.round(xNew) + center.x, Math.round(yNew) + center.y);
+    }
+
     public static Point origin() {
         return ORIGIN;
     }

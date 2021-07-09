@@ -40,21 +40,26 @@ public class ProblemComponent extends JComponent {
     }
 
     public void translateFigure(int x, int y) {
-        problem.getFigure().translate(x, y);
+        getFigure().translate(x, y);
         repaint();
     }
 
     public void flip(boolean horizontal) {
         if (horizontal) {
-            problem.getFigure().flipHorizontal();
+            getFigure().flipHorizontal();
         } else {
-            problem.getFigure().flipVertical();
+            getFigure().flipVertical();
         }
         repaint();
     }
 
     public void rotateClockwise() {
         problem.getFigure().rotate90CW();
+        repaint();
+    }
+
+    public void rotate(int degrees) {
+        getFigure().rotate(degrees);
         repaint();
     }
 

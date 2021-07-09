@@ -65,6 +65,10 @@ public class Gui {
         controls.add(new JButton(new FlipAction(this, true)));
         controls.add(new JButton(new FlipAction(this, false)));
         controls.add(new JButton(new Rotate90Action(this)));
+        controls.add(new JButton(new RotateAction(this, -30)));
+        controls.add(new JButton(new RotateAction(this, -5)));
+        controls.add(new JButton(new RotateAction(this, 5)));
+        controls.add(new JButton(new RotateAction(this, 30)));
         frame.add(controls, BorderLayout.EAST);
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));

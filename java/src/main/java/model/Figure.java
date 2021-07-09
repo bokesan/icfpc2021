@@ -135,6 +135,14 @@ public class Figure {
         }
     }
 
+    public void rotate(int degrees) {
+        Point center = getBounds().getCenter();
+        int n = vertices.length;
+        for (int i = 0; i < n; i++) {
+            vertices[i] = vertices[i].rotate(center, degrees);
+        }
+    }
+
     public void moveVertex(int index, Point newPosition) {
         vertices[index] = newPosition;
     }
