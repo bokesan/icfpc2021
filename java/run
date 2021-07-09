@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar build/libs/icfpc2021-0.1.0.jar $*
+java -jar build/libs/java-0.1.0.jar $*
