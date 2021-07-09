@@ -63,6 +63,14 @@ public class Point {
         return y;
     }
 
+    public long distanceSquared(Point q) {
+        return square(getX() - q.getX()) + square(getY() - q.getY());
+    }
+
+    private static long square(long x) {
+        return x * x;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -33,10 +33,15 @@ public class Figure {
 
     private final Point[] vertices;
     private final Edge[] edges;
+    private final long[] originalLengths;
 
     private Figure(Point[] vertices, Edge[] edges) {
         this.vertices = vertices;
         this.edges = edges;
+        this.originalLengths = new long[edges.length];
+        for (int i = 0; i < edges.length; i++) {
+            originalLengths[i] = getEdgeLengthSquared(i);
+        }
     }
 
     public static Figure of(Collection<Point> vertices, Collection<Point> edges) {
@@ -68,6 +73,17 @@ public class Figure {
 
     public Edge getEdge(int i) {
         return edges[i];
+    }
+
+    public long getEdgeLengthSquared(int i) {
+        Edge edge = edges[i];
+        Point p = vertices[edge.vertex1];
+        Point q = vertices[edge.vertex2];
+        return p.distanceSquared(q);
+    }
+
+    public long getOriginalEdgeLengthSquared(int i) {
+        return originalLengths[i];
     }
 
     public Point getVertex(int i) {

@@ -13,8 +13,9 @@ public class Gui {
 
     private JTextField txtPose;
     private ProblemComponent image;
-    private JLabel lblEpsilon = new JLabel();
-    private JLabel lblNumVertices = new JLabel();
+    private final JLabel lblEpsilon = new JLabel();
+    private final JLabel lblNumVertices = new JLabel();
+    private JList<String> lstEdges;
 
     public Gui() {
         setup();
@@ -70,11 +71,22 @@ public class Gui {
         info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));
         info.add(lblEpsilon);
         info.add(lblNumVertices);
+        lstEdges = new JList<>(new DefaultListModel<>());
+        lstEdges.setLayoutOrientation(JList.VERTICAL);
+        info.add(lstEdges);
         frame.add(info, BorderLayout.WEST);
         frame.setLocationRelativeTo(null);
         frame.setLocationByPlatform(true);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void setEdges(String[] edgeInfo) {
+        DefaultListModel<String> model = (DefaultListModel<String>) lstEdges.getModel();
+        model.clear();
+        for (String s : edgeInfo) {
+            model.addElement(s);
+        }
     }
 
     public void show(Problem problem) {

@@ -67,7 +67,6 @@ public class ProblemComponent extends JComponent {
         return BORDER + (y - problemBounds.getMinY()) * scaleFactor();
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         gWidth = this.getWidth();
@@ -89,22 +88,44 @@ public class ProblemComponent extends JComponent {
         showLine(g, points[n-1], points[0]);
     }
 
+    private void labelPoint(Graphics2D g, Point point, int i) {
+        float x = translateX(g, point.getX());
+        float y = translateY(g, point.getY());
+        g.drawString("V" + i, x + 5, y + 2);
+    }
+
     private void showFigure(Graphics2D g, Figure figure) {
         int n = figure.getNumEdges();
         for (int i = 0; i < n; i++) {
             model.Point p1 = figure.getEdgeStart(i);
             Point p2 = figure.getEdgeEnd(i);
-            showLine(g, p1, p2);
+            long length = figure.getEdgeLengthSquared(i);
+            long orig = figure.getOriginalEdgeLengthSquared(i);
+            boolean ok = Math.abs((double) length / orig - 1) <= (double) problem.getEpsilon() / 1000000;
+            String label = length + (ok ? " OK" : " BAD!");
+            showLine(g, p1, p2, label);
+        }
+        int m = figure.getNumVertices();
+        for (int i = 0; i < m; i++) {
+            labelPoint(g, figure.getVertex(i), i);
         }
     }
 
     private void showLine(Graphics2D g, Point p1, Point p2) {
+        showLine(g, p1, p2, Long.toString(p1.distanceSquared(p2)));
+    }
+
+    private void showLine(Graphics2D g, Point p1, Point p2, String label) {
         float x1 = translateX(g, p1.getX());
         float y1 = translateY(g, p1.getY());
         float x2 = translateX(g, p2.getX());
         float y2 = translateY(g, p2.getY());
-        // System.out.format("Drawing line: %.1f, %.1f - %.1f, %.1f\n", x1, y1, x2, y2);
         g.draw(new Line2D.Float(x1,y1,x2,y2));
+        float cx = (x1 + x2) / 2;
+        float cy = (y1 + y2) / 2;
+        if (label != null) {
+            g.drawString(label, cx + 5, cy + 5);
+        }
         // g.drawString(line.from.toString(), x1+COORD_OFFSET_X, y1+COORD_OFFSET_Y);
         // g.drawString(line.to.toString(), x2+COORD_OFFSET_X, y2+COORD_OFFSET_Y);
     }

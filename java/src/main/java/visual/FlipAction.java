@@ -19,5 +19,6 @@ public class FlipAction extends AbstractAction {
         ProblemComponent image = gui.getImage();
         image.flip(horizontal);
         gui.setPose(image.getFigure().getPose());
+        gui.setEdges(image.getProblem().getEdgeParams());
     }
 }

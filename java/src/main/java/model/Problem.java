@@ -47,6 +47,18 @@ public class Problem {
         return hole.getBounds().union(figure.getBounds());
     }
 
+    public String[] getEdgeParams() {
+        String[] params = new String[figure.getNumEdges()];
+        for (int i = 0; i < params.length; i++) {
+            Figure.Edge edge = figure.getEdge(i);
+            long length = figure.getEdgeLengthSquared(i);
+            long orig = figure.getOriginalEdgeLengthSquared(i);
+            boolean ok = Math.abs((double) length / orig - 1) <= (double) epsilon / 1000000;
+            params[i] = edge + ": length " + length + (ok ? " OK" : " BAD!");
+        }
+        return params;
+    }
+
     @Override
     public String toString() {
         return "Problem{" +
