@@ -86,6 +86,10 @@ public class Figure {
         return originalLengths[i];
     }
 
+    public Point[] getVertices() {
+        return vertices;
+    }
+
     public Point getVertex(int i) {
         return vertices[i];
     }
@@ -161,7 +165,7 @@ public class Figure {
     }
 
     public String getPose() {
-        return "{ \"vertices\": " + Hole.toJson(vertices) + " }";
+        return "{ \"vertices\": " + Polygon.toJson(vertices) + " }";
     }
 
     @Override

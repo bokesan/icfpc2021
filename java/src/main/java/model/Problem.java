@@ -8,18 +8,18 @@ import java.io.IOException;
 
 public class Problem {
 
-    private final Hole hole;
+    private final Polygon hole;
     private final Figure figure;
     private final long epsilon;
 
-    public Problem(Hole hole, Figure figure, long epsilon) {
+    public Problem(Polygon hole, Figure figure, long epsilon) {
         this.hole = hole;
         this.figure = figure;
         this.epsilon = epsilon;
     }
 
     public static Problem of(JsonNode node) {
-        Hole hole = Hole.of(node.get("hole"));
+        Polygon hole = Polygon.of(node.get("hole"));
         Figure figure = Figure.of(node.get("figure"));
         long epsilon = node.get("epsilon").longValue();
         return new Problem(hole, figure, epsilon);
@@ -31,7 +31,7 @@ public class Problem {
         return of(json);
     }
 
-    public Hole getHole() {
+    public Polygon getHole() {
         return hole;
     }
 
@@ -50,8 +50,8 @@ public class Problem {
     @Override
     public String toString() {
         return "Problem{" +
-                "hole=" + hole +
-                ", figure=" + figure +
+                "hole=" + hole.getNumVertices() +
+                ", figure=" + figure.getNumVertices() + "," + figure.getNumEdges() +
                 ", epsilon=" + epsilon +
                 '}';
     }
