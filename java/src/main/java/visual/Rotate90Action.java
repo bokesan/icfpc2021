@@ -17,7 +17,6 @@ public class Rotate90Action extends AbstractAction {
         ProblemComponent image = gui.getImage();
         image.rotateClockwise();
         gui.setPose(image.getFigure().getPose());
-        gui.setEdges(image.getProblem().getEdgeParams());
     }
 
 }

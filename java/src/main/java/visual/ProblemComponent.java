@@ -13,14 +13,20 @@ import java.awt.geom.Line2D;
 
 public class ProblemComponent extends JComponent {
 
+    private final Gui gui;
     private Problem problem;
 
-    public ProblemComponent() {
+    public ProblemComponent(Gui gui) {
+        this.gui = gui;
         this.addMouseListener(new MyMouseListener());
     }
 
     public Problem getProblem() {
         return problem;
+    }
+
+    public Gui getGui() {
+        return gui;
     }
 
     public Figure getFigure() {
@@ -80,12 +86,12 @@ public class ProblemComponent extends JComponent {
 
     protected long reverseTranslateX(long sx) {
         float scale = scaleFactor();
-        return (long) (sx / scale + problemBounds.getMinX() - BORDER / scale);
+        return Math.round(sx / scale + problemBounds.getMinX() - BORDER / scale);
     }
 
     protected long reverseTranslateY(long sy) {
         float scale = scaleFactor();
-        return (long) (sy / scale + problemBounds.getMinY() - BORDER / scale);
+        return Math.round(sy / scale + problemBounds.getMinY() - BORDER / scale);
     }
 
     @Override
@@ -122,8 +128,13 @@ public class ProblemComponent extends JComponent {
             Point p2 = figure.getEdgeEnd(i);
             long length = figure.getEdgeLengthSquared(i);
             long orig = figure.getOriginalEdgeLengthSquared(i);
-            boolean ok = Math.abs((double) length / orig - 1) <= (double) problem.getEpsilon() / 1000000;
-            String label = length + (ok ? " OK" : " BAD!");
+            String state;
+            if (Math.abs((double) length / orig - 1) <= (double) problem.getEpsilon() / 1000000) {
+                state = "";
+            } else {
+                state = " (" + orig + ")";
+            }
+            String label = length + state;
             showLine(g, p1, p2, label);
         }
         int m = figure.getNumVertices();
@@ -168,6 +179,7 @@ public class ProblemComponent extends JComponent {
                 long x = reverseTranslateX(e.getX());
                 long y = reverseTranslateY(e.getY());
                 moveVertex(selectedVertex, Point.of(x, y));
+                getGui().setPose(getFigure().getPose());
             }
         }
     }

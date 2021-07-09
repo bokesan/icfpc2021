@@ -21,6 +21,5 @@ public class TranslateAction extends AbstractAction {
         ProblemComponent image = gui.getImage();
         image.translateFigure(x, y);
         gui.setPose(image.getFigure().getPose());
-        gui.setEdges(image.getProblem().getEdgeParams());
     }
 }
