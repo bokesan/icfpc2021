@@ -135,6 +135,23 @@ public class Figure {
         }
     }
 
+    public void moveVertex(int index, Point newPosition) {
+        vertices[index] = newPosition;
+    }
+
+    public int findVertex(long x, long y) {
+        for (long delta = 0; delta < 10; delta++) {
+            for (int i = 0; i < vertices.length; i++) {
+                long dx = Math.abs(x - vertices[i].getX());
+                long dy = Math.abs(y - vertices[i].getY());
+                if (dx <= delta && dy <= delta) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
     public String getPose() {
         return "{ \"vertices\": " + Hole.toJson(vertices) + " }";
     }
