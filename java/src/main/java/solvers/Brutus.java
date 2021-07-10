@@ -12,6 +12,10 @@ import java.util.List;
 
 public class Brutus implements Solver {
 
+    private static final int RESEED_INTERVAL = 1000;
+
+    private int reseedCounter;
+
     private Problem problem;
     private Bounds bounds;
     private int numVertices;
@@ -37,13 +41,16 @@ public class Brutus implements Solver {
                 }
             }
         }
-        // Collections.shuffle(pointsInsideHole);
 
         bestDislikes = Long.MAX_VALUE;
         bestSolution = null;
 
-        fill(0);
-
+        while (bestDislikes > 0) {
+            reseedCounter = RESEED_INTERVAL;
+            fill(0);
+            System.out.println("Reseeding...");
+            Collections.shuffle(pointsInsideHole);
+        }
         if (bestSolution != null) {
             System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));
         }
@@ -52,6 +59,7 @@ public class Brutus implements Solver {
     }
 
     private void fill(int i) {
+        reseedCounter--;
         if (i == numVertices) {
             // we have a solution?!
             if (problem.isValid()) {
@@ -60,6 +68,7 @@ public class Brutus implements Solver {
                     bestDislikes = dislikes;
                     bestSolution = Arrays.copyOf(problem.getFigure().getVertices(), problem.getFigure().getNumVertices());
                     System.out.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose());
+                    reseedCounter = RESEED_INTERVAL;
                 }
             }
             return;
@@ -74,7 +83,7 @@ public class Brutus implements Solver {
             problem.getFigure().moveVertex(i, p);
             if (problem.isValidUpTo(i)) {
                 fill(i + 1);
-                if (bestDislikes == 0) {
+                if (bestDislikes == 0 || reseedCounter <= 0) {
                     return;
                 }
             }

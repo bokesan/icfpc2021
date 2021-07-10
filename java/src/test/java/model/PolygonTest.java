@@ -94,4 +94,13 @@ public class PolygonTest {
         assertTrue(p.isConvex());
     }
 
+    @Test
+    public void testContainsLine1() {
+        Polygon p = fromPoints(new int[]{1,1, 1,2, 2,3, 1,4, 1,5, 5,5, 5,1});
+        assertTrue(p.containsEdge(Point.of(3,3), Point.of(4,4)));
+        assertTrue(p.containsEdge(Point.of(5,2), Point.of(5,4)));
+        assertFalse(p.containsEdge(Point.of(1,1), Point.of(1,5)));
+        assertFalse(p.containsEdge(Point.of(1,2), Point.of(1,4)));
+    }
+
 }

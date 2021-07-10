@@ -69,7 +69,7 @@ public class Lines {
     }
 
     public static boolean intersect(Point a1, Point a2, Point b1, Point b2) {
-        return intersection_dbl(a1, a2, b1, b2) != null;
+        return intersection_dbl(a1, a2, b1, b2);
     }
 
     public static Point intersection(Point a1, Point a2, Point b1, Point b2) {
@@ -120,11 +120,11 @@ public class Lines {
         }
     }
 
-    public static Point intersection_dbl(Point a1, Point a2, Point b1, Point b2) {
+    public static boolean intersection_dbl(Point a1, Point a2, Point b1, Point b2) {
         //we do not want parallel stuff, multiple points etc
-        if (isVertical(a1, a2) && isVertical(b1, b2)) return null;
+        if (isVertical(a1, a2) && isVertical(b1, b2)) return false;
         if ((!isVertical(a1, a2)) && (!isVertical(b1, b2))) {
-            if (dblSlope(a1, a2) == dblSlope(b1, b2)) return null;
+            if (dblSlope(a1, a2) == dblSlope(b1, b2)) return false;
         }
 
         long x1 = a1.getX();
@@ -144,26 +144,24 @@ public class Lines {
 
         if (denom == 0 && num_Ua == 0 && num_Ub == 0) {
             //coincident
-            return null;
+            return false;
         } else if (denom == 0) {
             //parallel
-            return null;
+            return false;
         } else {
             double ua = num_Ua / (double) denom;
             double ub = num_Ub / (double) denom;
-            double x = x1 + ua * (x2 - x1);
-            double y = y1 + ua * (y2 - y1);
             if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
                 //real intersection
 
                 // but we don't want ends
                 if (a1.equals(b1) || a2.equals(b1) || a1.equals(b2) || a2.equals(b2))
-                    return null;
+                    return false;
 
-                return Point.of(Math.round(x), Math.round(y));
+                return true;
             }
             //intersection outside of lines
-            return null;
+            return false;
         }
     }
 
