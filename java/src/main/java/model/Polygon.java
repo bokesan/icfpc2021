@@ -218,4 +218,13 @@ public class Polygon {
         }
     }
 
+    public boolean containsVertex(Point p) {
+        for (Point v : vertices) {
+            if (v.equals(p)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

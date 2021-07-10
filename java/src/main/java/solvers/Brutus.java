@@ -47,7 +47,11 @@ public class Brutus implements Solver {
         bestSolution = null;
         exhaustive = false;
 
+        int alt = 0;
         while (bestDislikes > 0 && !exhaustive) {
+            if ((alt & 1) != 0)
+                moveHoleVerticesToFront(pointsInsideHole);
+            alt++;
             reseedCounter = RESEED_INTERVAL;
             fill(0);
             System.out.println("Reseeding...");
@@ -58,6 +62,21 @@ public class Brutus implements Solver {
         }
 
         return bestSolution;
+    }
+
+    private void moveHoleVerticesToFront(List<Point> pointsInsideHole) {
+        int n = pointsInsideHole.size() - 1;
+        int front = 0;
+        while (front < n) {
+            Point p = pointsInsideHole.get(n);
+            if (problem.getHole().containsVertex(p)) {
+                // swap
+                pointsInsideHole.set(n, pointsInsideHole.get(front));
+                pointsInsideHole.set(front, p);
+                front++;
+            }
+            n--;
+        }
     }
 
     private void fill(int i) {
