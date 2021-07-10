@@ -80,6 +80,10 @@ public class Polygon {
         return true;
     }
 
+    public static String toPose(Point[] vertices) {
+        return "{ \"vertices\": " + toJson(vertices) + " }";
+    }
+
     public static String toJson(Point[] vertices) {
         StringBuilder b = new StringBuilder();
         String sep = "[";

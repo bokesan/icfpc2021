@@ -12,12 +12,22 @@ public class Problem {
     private final Figure figure;
     private final long epsilon;
     private final double epsilonMil;
+    private final long[] maxLength;
+    private final long[] minLength;
 
     public Problem(Polygon hole, Figure figure, long epsilon) {
         this.hole = hole;
         this.figure = figure;
         this.epsilon = epsilon;
         this.epsilonMil = (double) epsilon / 1000000;
+        int n = figure.getNumEdges();
+        this.maxLength = new long[n];
+        this.minLength = new long[n];
+        for (int i = 0; i < n; i++) {
+            long o = figure.getOriginalEdgeLengthSquared(i);
+            maxLength[i] = (long) Math.floor((epsilonMil + 1) * o);
+            minLength[i] = (long) Math.ceil((1 - epsilonMil) * o);
+        }
     }
 
     public static Problem of(JsonNode node) {
@@ -74,10 +84,15 @@ public class Problem {
             Figure.Edge edge = figure.getEdge(i);
             if (edge.getVertex1() <= vertexIndex && edge.getVertex2() <= vertexIndex) {
                 long length = figure.getEdgeLengthSquared(i);
+                if (length < minLength[i] || length > maxLength[i]) {
+                    return false;
+                }
+                /*
                 long orig = figure.getOriginalEdgeLengthSquared(i);
                 if (Math.abs((double) length / orig - 1) > epsilonMil) {
                     return false;
                 }
+                 */
             }
         }
         for (int i = 0; i < n; i++) {

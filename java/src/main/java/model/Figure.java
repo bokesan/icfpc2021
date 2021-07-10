@@ -179,7 +179,7 @@ public class Figure {
     }
 
     public String getPose() {
-        return "{ \"vertices\": " + Polygon.toJson(vertices) + " }";
+        return Polygon.toPose(vertices);
     }
 
     @Override

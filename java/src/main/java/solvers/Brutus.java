@@ -43,6 +43,8 @@ public class Brutus implements Solver {
             }
         }
 
+        System.out.format("Vertices: %d. Candidates: %d\n", numVertices, pointsInsideHole.size());
+
         bestDislikes = Long.MAX_VALUE;
         bestSolution = null;
         exhaustive = false;
@@ -57,12 +59,12 @@ public class Brutus implements Solver {
             if (bestSolution == null) {
                 System.out.println("Reseeding...");
             } else {
-                System.out.format("Reseeding... Best so far (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));
+                System.out.format("Reseeding... Best so far (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution));
             }
             Collections.shuffle(pointsInsideHole);
         }
         if (bestSolution != null) {
-            System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));
+            System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution));
         }
 
         return bestSolution;
