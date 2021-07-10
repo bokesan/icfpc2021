@@ -54,7 +54,11 @@ public class Brutus implements Solver {
             alt++;
             reseedCounter = RESEED_INTERVAL;
             fill(0);
-            System.out.println("Reseeding...");
+            if (bestSolution == null) {
+                System.out.println("Reseeding...");
+            } else {
+                System.out.format("Reseeding... Best so far (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));
+            }
             Collections.shuffle(pointsInsideHole);
         }
         if (bestSolution != null) {
