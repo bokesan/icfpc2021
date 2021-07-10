@@ -7,6 +7,7 @@ import model.Problem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Brutus implements Solver {
@@ -36,6 +37,7 @@ public class Brutus implements Solver {
                 }
             }
         }
+        // Collections.shuffle(pointsInsideHole);
 
         bestDislikes = Long.MAX_VALUE;
         bestSolution = null;
@@ -72,6 +74,9 @@ public class Brutus implements Solver {
             problem.getFigure().moveVertex(i, p);
             if (problem.isValidUpTo(i)) {
                 fill(i + 1);
+                if (bestDislikes == 0) {
+                    return;
+                }
             }
             k++;
         }

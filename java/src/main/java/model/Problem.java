@@ -73,14 +73,15 @@ public class Problem {
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
             if (edge.getVertex1() <= vertexIndex && edge.getVertex2() <= vertexIndex) {
-                Point p1 = figure.getEdgeStart(i);
-                Point p2 = figure.getEdgeEnd(i);
-                if (!getHole().containsEdge(p1, p2)) {
-                    return false;
-                }
                 long length = figure.getEdgeLengthSquared(i);
                 long orig = figure.getOriginalEdgeLengthSquared(i);
                 if (Math.abs((double) length / orig - 1) > epsilonMil) {
+                    return false;
+                }
+
+                Point p1 = figure.getEdgeStart(i);
+                Point p2 = figure.getEdgeEnd(i);
+                if (!getHole().containsEdge(p1, p2)) {
                     return false;
                 }
             }
