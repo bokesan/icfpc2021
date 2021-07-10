@@ -1,6 +1,7 @@
 import model.Point;
 import model.Polygon;
 import model.Problem;
+import solvers.Brutus;
 import solvers.ExactMatchBruteforceSolver;
 import solvers.Solver;
 import visual.Gui;
@@ -25,7 +26,7 @@ public class Launcher {
             default:
                 switch (args[0]) {
                     case "-solve":
-                        solve(Arrays.copyOfRange(args, 1, args.length), new ExactMatchBruteforceSolver());
+                        solve(Arrays.copyOfRange(args, 1, args.length), /* new ExactMatchBruteforceSolver(), */ new Brutus());
                         break;
                     default:
                         usage();
@@ -50,7 +51,7 @@ public class Launcher {
                 if (pose == null) {
                     System.out.format("%s %s with %s: nope.\n", file, problem, solverName);
                 } else {
-                    System.out.format("%s %s with %s: %s\n", file, problem, solverName, Polygon.toJson(problem.getFigure().getVertices()));
+                    System.out.format("%s %s with %s: %s\n", file, problem, solverName, Polygon.toJson(pose));
                 }
             }
         }

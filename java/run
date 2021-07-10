@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar build/libs/java-0.1.0.jar $*
+java -Dsun.java2d.uiScale=2.0 -jar build/libs/java-0.1.0.jar $*

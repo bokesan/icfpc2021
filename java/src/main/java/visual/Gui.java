@@ -62,6 +62,7 @@ public class Gui {
         controls.add(new JButton(new TranslateAction(this, 0, -1)));
         controls.add(new JButton(new TranslateAction(this, 0, 1)));
         controls.add(new JButton(new TranslateAction(this, 0, 10)));
+        controls.add(new JButton(new TranslateAction(this, -9, 22)));
         controls.add(new JButton(new FlipAction(this, true)));
         controls.add(new JButton(new FlipAction(this, false)));
         controls.add(new JButton(new Rotate90Action(this)));

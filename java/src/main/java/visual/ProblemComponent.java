@@ -129,7 +129,7 @@ public class ProblemComponent extends JComponent {
     private void showFigure(Graphics2D g, Figure figure) {
         int n = figure.getNumEdges();
         for (int i = 0; i < n; i++) {
-            model.Point p1 = figure.getEdgeStart(i);
+            Point p1 = figure.getEdgeStart(i);
             Point p2 = figure.getEdgeEnd(i);
             long length = figure.getEdgeLengthSquared(i);
             long orig = figure.getOriginalEdgeLengthSquared(i);

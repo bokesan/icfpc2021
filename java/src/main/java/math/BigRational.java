@@ -195,9 +195,13 @@ public abstract class BigRational implements Comparable<BigRational> {
     }
     
     public int intValue() {
-        return (int) doubleValue();
+        return (int) longValue();
     }
-    
+
+    public long longValue() {
+        return Math.round(doubleValue());
+    }
+
     protected static boolean representableAsInt(BigInteger n) {
         return n.bitLength() <= 31;
     }

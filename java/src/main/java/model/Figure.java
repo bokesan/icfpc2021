@@ -25,6 +25,14 @@ public class Figure {
             vertex2 = (int) p.getY();
         }
 
+        public int getVertex1() {
+            return vertex1;
+        }
+
+        public int getVertex2() {
+            return vertex2;
+        }
+
         @Override
         public String toString() {
             return "[" + vertex1 + ", " + vertex2 + "]";
@@ -33,10 +41,12 @@ public class Figure {
 
     private final Point[] vertices;
     private final Edge[] edges;
+    private final Point[] originalVertices;
     private final long[] originalLengths;
 
     private Figure(Point[] vertices, Edge[] edges) {
-        this.vertices = vertices;
+        this.originalVertices = vertices;
+        this.vertices = Arrays.copyOf(vertices, vertices.length);
         this.edges = edges;
         this.originalLengths = new long[edges.length];
         for (int i = 0; i < edges.length; i++) {
@@ -61,6 +71,10 @@ public class Figure {
             edges.add(Point.of(edge));
         }
         return of(vertices, edges);
+    }
+
+    public void reset() {
+        System.arraycopy(originalVertices, 0, vertices, 0, vertices.length);
     }
 
     public int getNumVertices() {

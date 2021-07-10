@@ -15,9 +15,14 @@ public class Polygon {
 
     private final Point[] vertices;
     private final boolean clockwise;
+    private final java.awt.Polygon awtPolygon;
 
     private Polygon(Point[] vertices) {
         this.vertices = vertices;
+        this.awtPolygon = new java.awt.Polygon();
+        for (Point p : vertices) {
+            awtPolygon.addPoint((int) p.getX(), (int) p.getY());
+        }
         this.clockwise = isClockwise(vertices);
     }
 
@@ -41,6 +46,29 @@ public class Polygon {
             vertices.add(Point.of(vertex));
         }
         return of(vertices);
+    }
+
+    public boolean contains(Point p) {
+        for (int i = 0; i < vertices.length; i++) {
+            int j = ((i == 0) ? vertices.length : i) - 1;
+            if (Lines.containsPoint(vertices[i], vertices[j], p)) {
+                return true;
+            }
+        }
+        return awtPolygon.contains((int) p.getX(), (int) p.getY());
+    }
+
+    public boolean containsEdge(Point p1, Point p2) {
+        if (!(contains(p1) && contains(p2))) {
+            return false;
+        }
+        for (int i = 0; i < vertices.length; i++) {
+            int j = ((i == 0) ? vertices.length : i) - 1;
+            if (Lines.intersect(vertices[i], vertices[j], p1, p2)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static String toJson(Point[] vertices) {
