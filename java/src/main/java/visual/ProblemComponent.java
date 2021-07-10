@@ -142,7 +142,10 @@ public class ProblemComponent extends JComponent {
                 state = " (" + orig + ")";
             }
             String label = length + state;
+            if (!state.isEmpty())
+                g.setColor(Color.BLUE);
             showLine(g, p1, p2, label);
+            g.setColor(Color.RED);
         }
         int m = figure.getNumVertices();
         for (int i = 0; i < m; i++) {

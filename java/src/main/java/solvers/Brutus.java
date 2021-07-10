@@ -12,12 +12,11 @@ import java.util.List;
 
 public class Brutus implements Solver {
 
-    private static final int RESEED_INTERVAL = 10000;
+    private static final int RESEED_INTERVAL = 200000;
 
     private int reseedCounter;
 
     private Problem problem;
-    private Bounds bounds;
     private int numVertices;
     private boolean exhaustive;
 
@@ -30,7 +29,7 @@ public class Brutus implements Solver {
     @Override
     public Point[] solve(Problem problem) {
         this.problem = problem;
-        this.bounds = problem.getBounds();
+        Bounds bounds = problem.getBounds();
         this.numVertices = problem.getFigure().getNumVertices();
 
         pointsInsideHole.clear();
@@ -51,7 +50,7 @@ public class Brutus implements Solver {
 
         int alt = 0;
         while (bestDislikes > 0 && !exhaustive) {
-            if ((alt & 1) != 0)
+            if ((alt & 1) == 0)
                 moveHoleVerticesToFront(pointsInsideHole);
             alt++;
             reseedCounter = RESEED_INTERVAL;
@@ -101,9 +100,10 @@ public class Brutus implements Solver {
             return;
         }
 
-        int n = pointsInsideHole.size();
-        int k = 0;
-        for (Point p : pointsInsideHole) {
+        // examine just a random subset of points for large holes
+        int n = Math.min(pointsInsideHole.size(), Math.max(2000, problem.getFigure().getNumVertices()));
+        for (int k = 0; k < n; k++) {
+            Point p = pointsInsideHole.get(k);
             if (i == 0) {
                 System.out.format("Progress: %d%%\n", 100 * k / n);
             }

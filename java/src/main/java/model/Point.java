@@ -9,7 +9,17 @@ import java.util.Objects;
 
 public class Point {
 
-    private static final Point ORIGIN = new Point(0,0);
+    private static final int MAX_STATIC = 32;
+    private static final Point[] BY_COORD;
+
+    static {
+        BY_COORD = new Point[MAX_STATIC * MAX_STATIC];
+        for (int x = 0; x < MAX_STATIC; x++) {
+            for (int y = 0; y < MAX_STATIC; y++) {
+                BY_COORD[x * MAX_STATIC + y] = new Point(x, y);
+            }
+        }
+    }
 
     private final long x;
     private final long y;
@@ -20,6 +30,9 @@ public class Point {
     }
 
     public static Point of(long x, long y) {
+        if (x >= 0 && x < MAX_STATIC && y >= 0 && y < MAX_STATIC) {
+            return BY_COORD[(int) x * MAX_STATIC + (int) y];
+        }
         return new Point(x, y);
     }
 
@@ -69,7 +82,7 @@ public class Point {
     }
 
     public static Point origin() {
-        return ORIGIN;
+        return BY_COORD[0];
     }
 
     public long getX() {

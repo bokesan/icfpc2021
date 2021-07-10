@@ -78,11 +78,17 @@ public class Problem {
         return true;
     }
 
+    private static boolean shouldCheck(Figure.Edge edge, int newVertexIndex) {
+        // return edge.getVertex1() <= newVertexIndex && edge.getVertex2() <= newVertexIndex;
+        return (edge.getVertex1() == newVertexIndex && edge.getVertex2() < newVertexIndex) ||
+                (edge.getVertex2() == newVertexIndex && edge.getVertex1() < newVertexIndex);
+    }
+
     public boolean isValidUpTo(int vertexIndex) {
         int n = getFigure().getNumEdges();
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
-            if (edge.getVertex1() <= vertexIndex && edge.getVertex2() <= vertexIndex) {
+            if (shouldCheck(edge, vertexIndex)) {
                 long length = figure.getEdgeLengthSquared(i);
                 if (length < minLength[i] || length > maxLength[i]) {
                     return false;
@@ -97,7 +103,7 @@ public class Problem {
         }
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
-            if (edge.getVertex1() <= vertexIndex && edge.getVertex2() <= vertexIndex) {
+            if (shouldCheck(edge, vertexIndex)) {
                 Point p1 = figure.getEdgeStart(i);
                 Point p2 = figure.getEdgeEnd(i);
                 if (!getHole().containsEdge(p1, p2)) {
