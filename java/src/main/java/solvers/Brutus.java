@@ -54,20 +54,26 @@ public class Brutus implements Solver {
             // we have a solution?!
             if (problem.isValid()) {
                 long dislikes = problem.dislikes();
-                System.out.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose());
                 if (dislikes < bestDislikes) {
                     bestDislikes = dislikes;
                     bestSolution = Arrays.copyOf(problem.getFigure().getVertices(), problem.getFigure().getNumVertices());
+                    System.out.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose());
                 }
             }
             return;
         }
 
+        int n = pointsInsideHole.size();
+        int k = 0;
         for (Point p : pointsInsideHole) {
+            if (i == 0) {
+                System.out.format("Progress: %d%%\n", 100 * k / n);
+            }
             problem.getFigure().moveVertex(i, p);
             if (problem.isValidUpTo(i)) {
                 fill(i + 1);
             }
+            k++;
         }
     }
 }
