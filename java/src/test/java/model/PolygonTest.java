@@ -101,6 +101,16 @@ public class PolygonTest {
         assertTrue(p.containsEdge(Point.of(5,2), Point.of(5,4)));
         assertFalse(p.containsEdge(Point.of(1,1), Point.of(1,5)));
         assertFalse(p.containsEdge(Point.of(1,2), Point.of(1,4)));
+        assertTrue(p.containsEdge(Point.of(2,3), Point.of(3,3)));
+    }
+
+    @Test
+    public void testContainsLine2() {
+        Polygon p = fromPoints(new int[]{0,0, 10,0, 10,10});
+        assertTrue(p.containsEdge(Point.of(10,10), Point.of(9,4)));
+        assertTrue(p.containsEdge(Point.of(6,5), Point.of(7,5)));
+        assertTrue(p.containsEdge(Point.of(5,5), Point.of(6,5)));
+        assertFalse(p.containsEdge(Point.of(4,5),Point.of(6,5)));
     }
 
 }

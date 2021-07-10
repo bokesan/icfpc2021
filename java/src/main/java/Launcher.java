@@ -2,7 +2,6 @@ import model.Point;
 import model.Polygon;
 import model.Problem;
 import solvers.Brutus;
-import solvers.ExactMatchBruteforceSolver;
 import solvers.Solver;
 import visual.Gui;
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Brutus implements Solver {
 
-    private static final int RESEED_INTERVAL = 1000;
+    private static final int RESEED_INTERVAL = Integer.MAX_VALUE; // 1000;
 
     private int reseedCounter;
 
@@ -50,6 +50,8 @@ public class Brutus implements Solver {
             fill(0);
             System.out.println("Reseeding...");
             Collections.shuffle(pointsInsideHole);
+            if (RESEED_INTERVAL == Integer.MAX_VALUE)
+                break;
         }
         if (bestSolution != null) {
             System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));

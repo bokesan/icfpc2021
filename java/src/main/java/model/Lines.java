@@ -154,8 +154,11 @@ public class Lines {
             if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) {
                 //real intersection
 
+                double x = x1 + ua * (x2 - x1);
+                double y = y1 + ua * (y2 - y1);
+
                 // but we don't want ends
-                if (a1.equals(b1) || a2.equals(b1) || a1.equals(b2) || a2.equals(b2))
+                if (eq(a1, x, y) || eq(a2, x, y) || eq(b1, x, y) || eq(b2, x, y))
                     return false;
 
                 return true;
@@ -165,4 +168,7 @@ public class Lines {
         }
     }
 
+    private static boolean eq(Point p, double x, double y) {
+        return p.getX() == x && p.getY() == y;
+    }
 }
