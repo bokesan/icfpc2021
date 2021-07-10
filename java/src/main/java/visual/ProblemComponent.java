@@ -116,8 +116,10 @@ public class ProblemComponent extends JComponent {
         int n = points.length;
         for (int i = 1; i < n; i++) {
             showLine(g, points[i-1], points[i]);
+            labelPoint(g, points[i], i);
         }
         showLine(g, points[n-1], points[0]);
+        labelPoint(g, points[0], 0);
     }
 
     private void labelPoint(Graphics2D g, Point point, int i) {

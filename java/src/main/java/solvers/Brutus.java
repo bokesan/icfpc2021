@@ -12,18 +12,19 @@ import java.util.List;
 
 public class Brutus implements Solver {
 
-    private static final int RESEED_INTERVAL = Integer.MAX_VALUE; // 1000;
+    private static final int RESEED_INTERVAL = 10000;
 
     private int reseedCounter;
 
     private Problem problem;
     private Bounds bounds;
     private int numVertices;
+    private boolean exhaustive;
 
     private Point[] bestSolution;
     private long bestDislikes;
 
-    private List<Point> pointsInsideHole = new ArrayList<>(10000);
+    private final List<Point> pointsInsideHole = new ArrayList<>(10000);
 
 
     @Override
@@ -44,14 +45,13 @@ public class Brutus implements Solver {
 
         bestDislikes = Long.MAX_VALUE;
         bestSolution = null;
+        exhaustive = false;
 
-        while (bestDislikes > 0) {
+        while (bestDislikes > 0 && !exhaustive) {
             reseedCounter = RESEED_INTERVAL;
             fill(0);
             System.out.println("Reseeding...");
             Collections.shuffle(pointsInsideHole);
-            if (RESEED_INTERVAL == Integer.MAX_VALUE)
-                break;
         }
         if (bestSolution != null) {
             System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toJson(bestSolution));
@@ -90,6 +90,9 @@ public class Brutus implements Solver {
                 }
             }
             k++;
+        }
+        if (i == 0) {
+            exhaustive = true;
         }
     }
 }

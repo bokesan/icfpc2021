@@ -59,11 +59,20 @@ public class Polygon {
     }
 
     public boolean containsEdge(Point p1, Point p2) {
-        if (!(contains(p1) && contains(p2) && contains(Points.middle(p1, p2)))) {
+        if (!(contains(p1) && contains(p2))) {
             return false;
         }
+        Point mid = Points.middle(p1, p2);
+        if (mid != null && !contains(mid))
+            return false;
         for (int i = 0; i < vertices.length; i++) {
             int j = ((i == 0) ? vertices.length : i) - 1;
+            /*
+            if (vertices[i].equals(p1) && vertices[j].equals(p2))
+                return true;
+            if (vertices[j].equals(p1) && vertices[i].equals(p2))
+                return true;
+            */
             if (Lines.intersect(vertices[i], vertices[j], p1, p2)) {
                 return false;
             }
