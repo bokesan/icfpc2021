@@ -147,6 +147,9 @@ public class Problem {
 
     private static String baseName(String s) {
         int p = s.lastIndexOf('/');
+        if (p < 0) {
+            p = s.lastIndexOf('\\');
+        }
         if (p >= 0) {
             s = s.substring(p + 1);
         }

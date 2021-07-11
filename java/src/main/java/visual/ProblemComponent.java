@@ -9,12 +9,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProblemComponent extends JComponent {
 
     private final Gui gui;
     private Problem problem;
+    private final Set<Integer> selectedVertices = new HashSet<>();
 
     public ProblemComponent(Gui gui) {
         this.gui = gui;
@@ -36,11 +40,18 @@ public class ProblemComponent extends JComponent {
     public void setProblem(Problem problem) {
         this.problem = problem;
         this.problemBounds = problem.getBounds();
+        this.selectedVertices.clear();
         repaint();
     }
 
-    public void translateFigure(int x, int y) {
-        getFigure().translate(x, y);
+    public void translateFigure(int x, int y, boolean onlySelectedVertices) {
+        if (onlySelectedVertices) {
+            for (int vertex : selectedVertices) {
+                getFigure().translate(vertex, x, y);
+            }
+        } else {
+            getFigure().translate(x, y);
+        }
         repaint();
     }
 
@@ -99,6 +110,12 @@ public class ProblemComponent extends JComponent {
         return Math.round(sy / scale + problemBounds.getMinY() - BORDER / scale);
     }
 
+    private void toggleSelected(int vertex) {
+        if (!selectedVertices.add(vertex)) {
+            selectedVertices.remove(vertex);
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         gWidth = this.getWidth();
@@ -126,6 +143,10 @@ public class ProblemComponent extends JComponent {
         float x = translateX(g, point.getX());
         float y = translateY(g, point.getY());
         g.drawString("V" + i, x + 5, y + 2);
+        if (selectedVertices.contains(i)) {
+            Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 7, 7);
+            g.fill(circle);
+        }
     }
 
     private void showFigure(Graphics2D g, Figure figure) {
@@ -168,8 +189,6 @@ public class ProblemComponent extends JComponent {
         if (label != null) {
             g.drawString(label, cx + 5, cy + 5);
         }
-        // g.drawString(line.from.toString(), x1+COORD_OFFSET_X, y1+COORD_OFFSET_Y);
-        // g.drawString(line.to.toString(), x2+COORD_OFFSET_X, y2+COORD_OFFSET_Y);
     }
 
     private class MyMouseListener extends MouseAdapter {
@@ -186,10 +205,15 @@ public class ProblemComponent extends JComponent {
         @Override
         public void mouseReleased(MouseEvent e) {
             if (selectedVertex >= 0) {
-                long x = reverseTranslateX(e.getX());
-                long y = reverseTranslateY(e.getY());
-                moveVertex(selectedVertex, Point.of(x, y));
-                getGui().setPose(getFigure().getPose().toString());
+                if (e.isControlDown()) {
+                    toggleSelected(selectedVertex);
+                    repaint();
+                } else {
+                    long x = reverseTranslateX(e.getX());
+                    long y = reverseTranslateY(e.getY());
+                    moveVertex(selectedVertex, Point.of(x, y));
+                    getGui().setPose(getFigure().getPose().toString());
+                }
             }
         }
     }

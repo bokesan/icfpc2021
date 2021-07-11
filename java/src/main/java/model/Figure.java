@@ -135,6 +135,10 @@ public class Figure {
         }
     }
 
+    public void translate(int vertex, int x, int y) {
+        vertices[vertex] = vertices[vertex].translate(x, y);
+    }
+
     public void flipHorizontal() {
         Bounds bounds = getBounds();
         long x = (bounds.getMinX() + bounds.getMaxX()) / 2;
