@@ -11,4 +11,8 @@ public class Points {
         return Point.of((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
     }
 
+    public static double distance(Point p1, Point p2) {
+        return Math.sqrt(p1.distanceSquared(p2));
+    }
+
 }

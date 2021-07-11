@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import util.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,7 +88,6 @@ public class Problem {
     }
 
     private static boolean shouldCheck(Figure.Edge edge, int newVertexIndex) {
-        // return edge.getVertex1() <= newVertexIndex && edge.getVertex2() <= newVertexIndex;
         return (edge.getVertex1() == newVertexIndex && edge.getVertex2() < newVertexIndex) ||
                 (edge.getVertex2() == newVertexIndex && edge.getVertex1() < newVertexIndex);
     }
@@ -101,12 +101,6 @@ public class Problem {
                 if (length < minLength[i] || length > maxLength[i]) {
                     return false;
                 }
-                /*
-                long orig = figure.getOriginalEdgeLengthSquared(i);
-                if (Math.abs((double) length / orig - 1) > epsilonMil) {
-                    return false;
-                }
-                 */
             }
         }
         for (int i = 0; i < n; i++) {
@@ -118,6 +112,72 @@ public class Problem {
                     return false;
                 }
             }
+        }
+        return true;
+    }
+
+    public boolean isValidFor(int[] vertexIndices) {
+        int n = getFigure().getNumEdges();
+        for (int i = 0; i < n; i++) {
+            Figure.Edge edge = figure.getEdge(i);
+            if (shouldCheck(edge, vertexIndices)) {
+                long length = figure.getEdgeLengthSquared(i);
+                if (length < minLength[i] || length > maxLength[i]) {
+                    return false;
+                }
+                Point p1 = figure.getVertex(edge.getVertex1());
+                Point p2 = figure.getVertex(edge.getVertex2());
+                if (!getHole().containsEdge(p1, p2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean insideIsValidFor(int[] vertexIndices) {
+        int n = getFigure().getNumEdges();
+        for (int i = 0; i < n; i++) {
+            Figure.Edge edge = figure.getEdge(i);
+            if (shouldCheck(edge, vertexIndices)) {
+                Point p1 = figure.getVertex(edge.getVertex1());
+                Point p2 = figure.getVertex(edge.getVertex2());
+                if (!getHole().containsEdge(p1, p2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean lengthIsValidFor(int[] vertexIndices) {
+        int n = getFigure().getNumEdges();
+        for (int i = 0; i < n; i++) {
+            Figure.Edge edge = figure.getEdge(i);
+            if (shouldCheck(edge, vertexIndices)) {
+                long length = figure.getEdgeLengthSquared(i);
+                if (length < minLength[i] || length > maxLength[i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean shouldCheck(Figure.Edge edge, int[] vertexIndices) {
+        return ArrayUtils.contains(vertexIndices, edge.getVertex1()) && ArrayUtils.contains(vertexIndices, edge.getVertex2());
+    }
+
+    public boolean isValidEdge(int i) {
+        long length = figure.getEdgeLengthSquared(i);
+        if (length < minLength[i] || length > maxLength[i]) {
+            return false;
+        }
+        Figure.Edge edge = figure.getEdge(i);
+        Point p1 = figure.getVertex(edge.getVertex1());
+        Point p2 = figure.getVertex(edge.getVertex2());
+        if (!getHole().containsEdge(p1, p2)) {
+            return false;
         }
         return true;
     }

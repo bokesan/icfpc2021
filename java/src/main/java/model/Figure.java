@@ -33,6 +33,16 @@ public class Figure {
             return vertex2;
         }
 
+        public boolean hasVertex(int vertex) {
+            return vertex1 == vertex || vertex2 == vertex;
+        }
+
+        public int getOtherVertex(int vertex) {
+            if (vertex == vertex1) return vertex2;
+            if (vertex == vertex2) return vertex1;
+            throw new IllegalArgumentException("Vertex not in edge " + this + ", " + vertex);
+        }
+
         @Override
         public String toString() {
             return "[" + vertex1 + ", " + vertex2 + "]";
@@ -83,6 +93,10 @@ public class Figure {
 
     public int getNumEdges() {
         return edges.length;
+    }
+
+    public Edge[] getEdges() {
+        return edges;
     }
 
     public Edge getEdge(int i) {

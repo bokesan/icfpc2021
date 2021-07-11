@@ -2,6 +2,7 @@ import com.google.common.collect.ImmutableList;
 import model.Pose;
 import model.Problem;
 import solvers.Brutus;
+import solvers.ExactMatchBruteforceSolver;
 import solvers.Parameters;
 import solvers.Solver;
 import visual.Gui;
@@ -89,7 +90,8 @@ public class Launcher {
 
     private static void solve(List<String> files, Parameters parameters) {
         List<Function<Parameters, Solver>> solvers = ImmutableList.of(
-                ps -> new Brutus(ps)
+                // Brutus::new
+                ExactMatchBruteforceSolver::new
         );
 
         combinations(files, solvers).parallel().forEach(entry -> {
