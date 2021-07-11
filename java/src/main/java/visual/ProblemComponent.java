@@ -84,9 +84,9 @@ public class ProblemComponent extends JComponent {
 
     public void rotate(int degrees, boolean onlySelection) {
         if (onlySelection) {
-            getFigure().rotate(degrees);
-        } else {
             getFigure().rotate(degrees, selectedVertices);
+        } else {
+            getFigure().rotate(degrees);
         }
         repaint();
     }
