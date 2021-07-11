@@ -32,6 +32,6 @@ public class RotateAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         ProblemComponent image = gui.getImage();
         image.rotate(degrees, onlySelection);
-        gui.setPose(image.getFigure().getPose().toString());
+        gui.updateStatus();
     }
 }

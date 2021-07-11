@@ -244,7 +244,7 @@ public class ProblemComponent extends JComponent {
                     long x = reverseTranslateX(e.getX());
                     long y = reverseTranslateY(e.getY());
                     moveVertex(selectedVertex, Point.of(x, y));
-                    getGui().setPose(getFigure().getPose().toString());
+                    getGui().updateStatus();
                 }
             }
         }

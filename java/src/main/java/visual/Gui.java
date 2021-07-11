@@ -9,12 +9,11 @@ import java.awt.datatransfer.StringSelection;
 
 public class Gui {
 
-    private JFrame frame;
-
     private JTextField txtPose;
     private ProblemComponent image;
     private final JLabel lblEpsilon = new JLabel();
     private final JLabel lblNumVertices = new JLabel();
+    private final JLabel poseLabel = new JLabel("Pose:");
 
     public Gui() {
         setup();
@@ -24,19 +23,15 @@ public class Gui {
         return image;
     }
 
-    public void setPose(String poseJson) {
-        txtPose.setText(poseJson);
-    }
-
     private void setup() {
         Dimension sectionSeparator = new Dimension(20, 20);
-        frame = new JFrame();
+        JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setSize(1800, 990);
         JPanel statusBar = new JPanel();
         statusBar.setLayout(new BoxLayout(statusBar, BoxLayout.X_AXIS));
-        statusBar.add(new JLabel("Pose:"));
+        statusBar.add(poseLabel);
         txtPose = new JTextField(100);
         statusBar.add(txtPose);
         JButton copyToClipboardButton = new JButton("Copy");
@@ -111,6 +106,15 @@ public class Gui {
         frame.setLocationByPlatform(true);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void setPose(String poseJson) {
+        txtPose.setText(poseJson);
+    }
+
+    public void updateStatus() {
+        poseLabel.setText("Pose (" + image.getProblem().dislikes() + " dislikes):");
+        setPose(image.getFigure().getPose().toString());
     }
 
     public void show(Problem problem) {

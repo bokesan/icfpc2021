@@ -24,6 +24,6 @@ public class FlipAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         ProblemComponent image = gui.getImage();
         image.flip(horizontal, onlySelectedVertices);
-        gui.setPose(image.getFigure().getPose().toString());
+        gui.updateStatus();
     }
 }

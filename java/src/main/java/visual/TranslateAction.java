@@ -42,6 +42,6 @@ public class TranslateAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         ProblemComponent image = gui.getImage();
         image.translateFigure(x, y, onlySelectedVertices);
-        gui.setPose(image.getFigure().getPose().toString());
+        gui.updateStatus();
     }
 }
