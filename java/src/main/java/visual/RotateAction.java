@@ -7,11 +7,17 @@ public class RotateAction extends AbstractAction {
 
     private final Gui gui;
     private final int degrees;
+    private final boolean onlySelection;
 
     public RotateAction(Gui gui, int degrees) {
+        this(gui, degrees, false);
+    }
+
+    public RotateAction(Gui gui, int degrees, boolean onlySelection) {
         super(getLabel(degrees));
         this.gui = gui;
         this.degrees = degrees;
+        this.onlySelection = onlySelection;
     }
 
     private static String getLabel(int a) {
@@ -25,7 +31,7 @@ public class RotateAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         ProblemComponent image = gui.getImage();
-        image.rotate(degrees);
+        image.rotate(degrees, onlySelection);
         gui.setPose(image.getFigure().getPose().toString());
     }
 }

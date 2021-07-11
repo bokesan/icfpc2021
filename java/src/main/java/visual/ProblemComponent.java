@@ -72,13 +72,21 @@ public class ProblemComponent extends JComponent {
         repaint();
     }
 
-    public void rotateClockwise() {
-        problem.getFigure().rotate90CW();
+    public void rotateClockwise(boolean onlySelection) {
+        if (onlySelection) {
+            getFigure().rotate90CW(selectedVertices);
+        } else {
+            getFigure().rotate90CW();
+        }
         repaint();
     }
 
-    public void rotate(int degrees) {
-        getFigure().rotate(degrees);
+    public void rotate(int degrees, boolean onlySelection) {
+        if (onlySelection) {
+            getFigure().rotate(degrees);
+        } else {
+            getFigure().rotate(degrees, selectedVertices);
+        }
         repaint();
     }
 

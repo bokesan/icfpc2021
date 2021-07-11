@@ -190,11 +190,25 @@ public class Figure {
         }
     }
 
+    public void rotate90CW(Collection<Integer> vertices) {
+        Point center = getBounds(vertices).getCenter();
+        for (int i : vertices) {
+            this.vertices[i] = this.vertices[i].rotate90CW(center);
+        }
+    }
+
     public void rotate(int degrees) {
         Point center = getBounds().getCenter();
         int n = vertices.length;
         for (int i = 0; i < n; i++) {
             vertices[i] = vertices[i].rotate(center, degrees);
+        }
+    }
+
+    public void rotate(int degrees, Collection<Integer> vertices) {
+        Point center = getBounds(vertices).getCenter();
+        for (int i : vertices) {
+            this.vertices[i] = this.vertices[i].rotate(center, degrees);
         }
     }
 
