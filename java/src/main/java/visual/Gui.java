@@ -29,6 +29,7 @@ public class Gui {
     }
 
     private void setup() {
+        Dimension sectionSeparator = new Dimension(20, 20);
         frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -72,7 +73,7 @@ public class Gui {
         controls.add(new JButton(new RotateAction(this, -5)));
         controls.add(new JButton(new RotateAction(this, 5)));
         controls.add(new JButton(new RotateAction(this, 30)));
-        controls.addSeparator(new Dimension(20,20));
+        controls.addSeparator(sectionSeparator);
         controls.add(new JLabel("Sel.:"));
         controls.addSeparator();
         controls.add(new JButton(new TranslateAction(this, -1, 0, true)));
@@ -92,6 +93,14 @@ public class Gui {
         JButton clearSelection = new JButton("Clear");
         controls.add(clearSelection);
         clearSelection.addActionListener(e -> image.clearSelection());
+
+        controls.addSeparator(sectionSeparator);
+        controls.add(new JLabel("View"));
+        controls.addSeparator();
+        JToggleButton edgeLabels = new JToggleButton("Length", true);
+        controls.add(edgeLabels);
+        edgeLabels.addActionListener(e -> image.toggleEdgeLabels());
+
         frame.add(controls, BorderLayout.EAST);
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));

@@ -19,6 +19,7 @@ public class ProblemComponent extends JComponent {
     private final Gui gui;
     private Problem problem;
     private final Set<Integer> selectedVertices = new HashSet<>();
+    private boolean showEdgeLabels = true;
 
     public ProblemComponent(Gui gui) {
         this.gui = gui;
@@ -138,6 +139,11 @@ public class ProblemComponent extends JComponent {
         repaint();
     }
 
+    public void toggleEdgeLabels() {
+        showEdgeLabels = !showEdgeLabels;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         gWidth = this.getWidth();
@@ -213,7 +219,7 @@ public class ProblemComponent extends JComponent {
         g.draw(new Line2D.Float(x1,y1,x2,y2));
         float cx = (x1 + x2) / 2;
         float cy = (y1 + y2) / 2;
-        if (label != null) {
+        if (label != null && showEdgeLabels) {
             g.drawString(label, cx + 5, cy + 5);
         }
     }
