@@ -133,20 +133,25 @@ public class ProblemComponent extends JComponent {
         int n = points.length;
         for (int i = 1; i < n; i++) {
             showLine(g, points[i-1], points[i]);
-            labelPoint(g, points[i], i);
+            labelPoint(g, points[i], i, false);
         }
         showLine(g, points[n-1], points[0]);
-        labelPoint(g, points[0], 0);
+        labelPoint(g, points[0], 0, false);
     }
 
-    private void labelPoint(Graphics2D g, Point point, int i) {
+    private void labelPoint(Graphics2D g, Point point, int i, boolean isFigure) {
         float x = translateX(g, point.getX());
         float y = translateY(g, point.getY());
         g.drawString("V" + i, x + 5, y + 2);
-        if (selectedVertices.contains(i)) {
-            Ellipse2D.Double circle = new Ellipse2D.Double(x, y, 7, 7);
-            g.fill(circle);
+        int size;
+        if (isFigure && selectedVertices.contains(i)) {
+            size = 7;
+        } else {
+            size = 3;
         }
+        int h = size / 2;
+        Ellipse2D.Double circle = new Ellipse2D.Double(x-h, y-h, size, size);
+        g.fill(circle);
     }
 
     private void showFigure(Graphics2D g, Figure figure) {
@@ -170,7 +175,7 @@ public class ProblemComponent extends JComponent {
         }
         int m = figure.getNumVertices();
         for (int i = 0; i < m; i++) {
-            labelPoint(g, figure.getVertex(i), i);
+            labelPoint(g, figure.getVertex(i), i, true);
         }
     }
 

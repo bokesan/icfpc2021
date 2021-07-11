@@ -64,12 +64,6 @@ public class Gui {
         controls.add(new JButton(new TranslateAction(this, 0, -10)));
         controls.add(new JButton(new TranslateAction(this, 0, 10)));
         controls.addSeparator();
-        controls.add(new JLabel("Sel."));
-        controls.add(new JButton(new TranslateAction(this, -1, 0, true)));
-        controls.add(new JButton(new TranslateAction(this, 1, 0, true)));
-        controls.add(new JButton(new TranslateAction(this, 0, -1, true)));
-        controls.add(new JButton(new TranslateAction(this, 0, 1, true)));
-        controls.addSeparator();
         controls.add(new JButton(new FlipAction(this, true)));
         controls.add(new JButton(new FlipAction(this, false)));
         controls.add(new JButton(new Rotate90Action(this)));
@@ -77,6 +71,12 @@ public class Gui {
         controls.add(new JButton(new RotateAction(this, -5)));
         controls.add(new JButton(new RotateAction(this, 5)));
         controls.add(new JButton(new RotateAction(this, 30)));
+        controls.addSeparator(new Dimension(20,20));
+        controls.add(new JLabel("Selection"));
+        controls.add(new JButton(new TranslateAction(this, -1, 0, true)));
+        controls.add(new JButton(new TranslateAction(this, 1, 0, true)));
+        controls.add(new JButton(new TranslateAction(this, 0, -1, true)));
+        controls.add(new JButton(new TranslateAction(this, 0, 1, true)));
         frame.add(controls, BorderLayout.EAST);
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));
