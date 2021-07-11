@@ -10,21 +10,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Brutus implements Solver {
+public class Brutus extends AbstractSolver {
 
     private static final int RESEED_INTERVAL = 200000;
 
     private int reseedCounter;
 
-    private Problem problem;
     private int numVertices;
     private boolean exhaustive;
 
     private Point[] bestSolution;
     private long bestDislikes;
 
-    private final List<Point> pointsInsideHole = new ArrayList<>(10000);
+    private final List<Point> pointsInsideHole = new ArrayList<>(2000);
 
+    public Brutus(Parameters parameters) {
+        super(parameters);
+    }
 
     @Override
     public Point[] solve(Problem problem) {
@@ -42,7 +44,8 @@ public class Brutus implements Solver {
             }
         }
 
-        System.out.format("Vertices: %d. Candidates: %d\n", numVertices, pointsInsideHole.size());
+        log(problem.getName());
+        log(String.format("Vertices: %d. Candidates: %d\n", numVertices, pointsInsideHole.size()));
 
         bestDislikes = Long.MAX_VALUE;
         bestSolution = null;
@@ -55,16 +58,19 @@ public class Brutus implements Solver {
             alt++;
             reseedCounter = RESEED_INTERVAL;
             fill(0);
+            /*
             if (bestSolution == null) {
                 System.out.println("Reseeding...");
             } else {
                 System.out.format("Reseeding... Best so far (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution));
             }
+             */
             Collections.shuffle(pointsInsideHole);
         }
         if (bestSolution != null) {
-            System.out.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution));
+            log(String.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution)));
         }
+        log("Done.");
 
         return bestSolution;
     }
@@ -93,7 +99,8 @@ public class Brutus implements Solver {
                 if (dislikes < bestDislikes) {
                     bestDislikes = dislikes;
                     bestSolution = Arrays.copyOf(problem.getFigure().getVertices(), problem.getFigure().getNumVertices());
-                    System.out.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose());
+                    log(String.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose()));
+                    logConsole(String.format("new solution with %d dislikes found.", dislikes));
                     reseedCounter = RESEED_INTERVAL;
                 }
             }
@@ -101,12 +108,9 @@ public class Brutus implements Solver {
         }
 
         // examine just a random subset of points for large holes
-        int n = Math.min(pointsInsideHole.size(), Math.max(2000, problem.getFigure().getNumVertices()));
+        int n = Math.min(pointsInsideHole.size(), Math.max(parameters.getMaxPositions(), problem.getFigure().getNumVertices()));
         for (int k = 0; k < n; k++) {
             Point p = pointsInsideHole.get(k);
-            if (i == 0) {
-                System.out.format("Progress: %d%%\n", 100 * k / n);
-            }
             problem.getFigure().moveVertex(i, p);
             if (problem.isValidUpTo(i)) {
                 fill(i + 1);

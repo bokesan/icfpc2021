@@ -15,7 +15,7 @@ public class ExactMatchBruteforceSolver implements Solver {
         Figure figure = problem.getFigure();
         int n = problem.getHole().getNumVertices();
         int m = figure.getNumVertices();
-        if (n > m || m > 12) {
+        if (n > m || m >= 12) {
             return null;
         }
         List<Integer> indices = new ArrayList<>(m);
@@ -36,6 +36,9 @@ public class ExactMatchBruteforceSolver implements Solver {
                 }
             }
             if (ok) {
+                if (!problem.isValid()) {
+                    System.err.println("INCORRECT!");
+                }
                 return figure.getVertices();
             }
         }

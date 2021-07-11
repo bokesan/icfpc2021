@@ -15,6 +15,8 @@ public class Problem {
     private final long[] maxLength;
     private final long[] minLength;
 
+    private String name;
+
     public Problem(Polygon hole, Figure figure, long epsilon) {
         this.hole = hole;
         this.figure = figure;
@@ -40,7 +42,9 @@ public class Problem {
     public static Problem loadFromFile(String problemFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode json = mapper.readTree(new File(problemFile));
-        return of(json);
+        Problem problem = of(json);
+        problem.name = baseName(problemFile);
+        return problem;
     }
 
     public Polygon getHole() {
@@ -57,6 +61,10 @@ public class Problem {
 
     public Bounds getBounds() {
         return hole.getBounds().union(figure.getBounds());
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean isValid() {
@@ -135,5 +143,18 @@ public class Problem {
                 ", figure=" + figure.getNumVertices() + "," + figure.getNumEdges() +
                 ", epsilon=" + epsilon +
                 '}';
+    }
+
+    private static String baseName(String s) {
+        int p = s.lastIndexOf('/');
+        if (p >= 0) {
+            s = s.substring(p + 1);
+        }
+        p = s.lastIndexOf('.');
+        if (p > 0) {
+            return s.substring(0, p);
+        } else {
+            return s;
+        }
     }
 }
