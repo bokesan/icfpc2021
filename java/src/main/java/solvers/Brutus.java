@@ -2,11 +2,10 @@ package solvers;
 
 import model.Bounds;
 import model.Point;
-import model.Polygon;
+import model.Pose;
 import model.Problem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class Brutus extends AbstractSolver {
     private int numVertices;
     private boolean exhaustive;
 
-    private Point[] bestSolution;
+    private Pose bestSolution;
     private long bestDislikes;
 
     private final List<Point> pointsInsideHole = new ArrayList<>(2000);
@@ -29,7 +28,7 @@ public class Brutus extends AbstractSolver {
     }
 
     @Override
-    public Point[] solve(Problem problem) {
+    public Pose solve(Problem problem) {
         this.problem = problem;
         Bounds bounds = problem.getBounds();
         this.numVertices = problem.getFigure().getNumVertices();
@@ -68,7 +67,7 @@ public class Brutus extends AbstractSolver {
             Collections.shuffle(pointsInsideHole);
         }
         if (bestSolution != null) {
-            log(String.format("Best solution (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution)));
+            log(String.format("Best solution (%d dislikes): %s\n", bestDislikes, bestSolution));
         }
         log("Done.");
 
@@ -98,7 +97,7 @@ public class Brutus extends AbstractSolver {
                 long dislikes = problem.dislikes();
                 if (dislikes < bestDislikes) {
                     bestDislikes = dislikes;
-                    bestSolution = Arrays.copyOf(problem.getFigure().getVertices(), problem.getFigure().getNumVertices());
+                    bestSolution = problem.getFigure().getPose();
                     log(String.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose()));
                     logConsole(String.format("new solution with %d dislikes found.", dislikes));
                     reseedCounter = RESEED_INTERVAL;

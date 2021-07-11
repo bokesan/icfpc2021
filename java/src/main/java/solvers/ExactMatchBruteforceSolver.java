@@ -2,7 +2,7 @@ package solvers;
 
 import com.google.common.collect.Collections2;
 import model.Figure;
-import model.Point;
+import model.Pose;
 import model.Problem;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class ExactMatchBruteforceSolver implements Solver {
 
     @Override
-    public Point[] solve(Problem problem) {
+    public Pose solve(Problem problem) {
         Figure figure = problem.getFigure();
         int n = problem.getHole().getNumVertices();
         int m = figure.getNumVertices();
@@ -39,7 +39,7 @@ public class ExactMatchBruteforceSolver implements Solver {
                 if (!problem.isValid()) {
                     System.err.println("INCORRECT!");
                 }
-                return figure.getVertices();
+                return figure.getPose();
             }
         }
         return null;

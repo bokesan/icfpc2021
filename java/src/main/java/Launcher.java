@@ -1,6 +1,5 @@
 import com.google.common.collect.ImmutableList;
-import model.Point;
-import model.Polygon;
+import model.Pose;
 import model.Problem;
 import solvers.Brutus;
 import solvers.Parameters;
@@ -61,10 +60,7 @@ public class Launcher {
                     usage();
                     return;
                 }
-                Problem problem = Problem.loadFromFile(files.get(0));
-                System.out.println(problem);
-                Gui gui = new Gui();
-                gui.show(problem);
+                showGui(files);
                 break;
             case SOLVE:
                 solve(files, solverParameters);
@@ -76,11 +72,22 @@ public class Launcher {
 
     private static void usage() {
         System.err.println("usage:");
-        System.err.println("  run [-gui] file     gui with problem from file");
-        System.err.println("  run -solve file..   auto-solve problems from files");
+        System.err.println("  run problem [pose]    gui with problem from file");
+        System.err.println("  run -solve file..     auto-solve problems from files");
     }
 
-    private static void solve(List<String> files, Parameters parameters) throws IOException {
+    private static void showGui(List<String> files) throws IOException {
+        Problem problem = Problem.loadFromFile(files.get(0));
+        System.out.println(problem);
+        if (files.size() > 1) {
+            Pose pose = Pose.loadFromFile(files.get(1));
+            problem.getFigure().setPose(pose);
+        }
+        Gui gui = new Gui();
+        gui.show(problem);
+    }
+
+    private static void solve(List<String> files, Parameters parameters) {
         List<Function<Parameters, Solver>> solvers = ImmutableList.of(
                 ps -> new Brutus(ps)
         );
@@ -92,11 +99,11 @@ public class Launcher {
             System.out.format("Solving %s with %s...\n", file, solverName);
             try {
                 Problem problem = Problem.loadFromFile(file);
-                Point[] pose = solver.solve(problem);
+                Pose pose = solver.solve(problem);
                 if (pose == null) {
-                    System.out.format("%s %s with %s: no solution.\n", file, problem, solverName);
+                    System.out.format("%s with %s: no solution.\n", file, solverName);
                 } else {
-                    System.out.format("%s %s with %s: %s\n", file, problem, solverName, Polygon.toJson(pose));
+                    System.out.format("%s with %s: %s\n", file, solverName, pose);
                 }
             } catch (IOException e) {
                 System.err.println("Error loading " + file + ": " + e);

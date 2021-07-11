@@ -18,6 +18,6 @@ public class FlipAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         ProblemComponent image = gui.getImage();
         image.flip(horizontal);
-        gui.setPose(image.getFigure().getPose());
+        gui.setPose(image.getFigure().getPose().toString());
     }
 }

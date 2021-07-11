@@ -1,12 +1,12 @@
 package solvers;
 
-import model.Point;
+import model.Pose;
 import model.Problem;
 
 public interface Solver {
 
     boolean DEBUG_LOG = false;
 
-    Point[] solve(Problem problem);
+    Pose solve(Problem problem);
 
 }

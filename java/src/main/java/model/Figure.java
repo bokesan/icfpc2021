@@ -120,6 +120,14 @@ public class Figure {
         return Bounds.of(vertices);
     }
 
+    public void setPose(Pose pose) {
+        int n = getNumVertices();
+        if (pose.getNumVertices() != n) {
+            throw new IllegalArgumentException(String.format("Size mismatch: figure has %d vertices, pose has %d", n, pose.getNumVertices()));
+        }
+        System.arraycopy(pose.getVertices(), 0, vertices, 0, n);
+    }
+
     public void translate(int x, int y) {
         int n = vertices.length;
         for (int i = 0; i < n; i++) {
@@ -178,8 +186,8 @@ public class Figure {
         return -1;
     }
 
-    public String getPose() {
-        return Polygon.toPose(vertices);
+    public Pose getPose() {
+        return new Pose(vertices);
     }
 
     @Override
