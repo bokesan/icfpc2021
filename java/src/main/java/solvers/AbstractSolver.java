@@ -14,7 +14,7 @@ public abstract class AbstractSolver implements Solver {
     }
 
     protected void log(String message) {
-        String logfileName = problem.getName() + ".log";
+        String logfileName = problem.getName() + "_" + getClass().getSimpleName() + ".log";
 
         try (FileWriter fw = new FileWriter(logfileName, true);
              BufferedWriter bw = new BufferedWriter(fw);
