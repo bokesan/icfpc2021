@@ -114,6 +114,12 @@ public class ProblemComponent extends JComponent {
         if (!selectedVertices.add(vertex)) {
             selectedVertices.remove(vertex);
         }
+        repaint();
+    }
+
+    public void clearSelection() {
+        selectedVertices.clear();
+        repaint();
     }
 
     @Override
@@ -212,7 +218,6 @@ public class ProblemComponent extends JComponent {
             if (selectedVertex >= 0) {
                 if (e.isControlDown()) {
                     toggleSelected(selectedVertex);
-                    repaint();
                 } else {
                     long x = reverseTranslateX(e.getX());
                     long y = reverseTranslateY(e.getY());

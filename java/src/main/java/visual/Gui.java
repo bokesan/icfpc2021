@@ -77,6 +77,9 @@ public class Gui {
         controls.add(new JButton(new TranslateAction(this, 1, 0, true)));
         controls.add(new JButton(new TranslateAction(this, 0, -1, true)));
         controls.add(new JButton(new TranslateAction(this, 0, 1, true)));
+        JButton clearSelection = new JButton("Clear");
+        controls.add(clearSelection);
+        clearSelection.addActionListener(e -> image.clearSelection());
         frame.add(controls, BorderLayout.EAST);
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));
