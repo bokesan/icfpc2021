@@ -120,6 +120,15 @@ public class Figure {
         return Bounds.of(vertices);
     }
 
+    private Bounds getBounds(Collection<Integer> vertices) {
+        Point[] points = new Point[vertices.size()];
+        int k = 0;
+        for (int i : vertices) {
+            points[k++] = this.vertices[i];
+        }
+        return Bounds.of(points);
+    }
+
     public void setPose(Pose pose) {
         int n = getNumVertices();
         if (pose.getNumVertices() != n) {
@@ -148,12 +157,28 @@ public class Figure {
         }
     }
 
+    public void flipHorizontal(Collection<Integer> vertices) {
+        Bounds bounds = getBounds(vertices);
+        long x = (bounds.getMinX() + bounds.getMaxX()) / 2;
+        for (int i : vertices) {
+            this.vertices[i] = this.vertices[i].flipHorizontal(x);
+        }
+    }
+
     public void flipVertical() {
         Bounds bounds = getBounds();
         long y = (bounds.getMinY() + bounds.getMaxY()) / 2;
         int n = vertices.length;
         for (int i = 0; i < n; i++) {
             vertices[i] = vertices[i].flipVertical(y);
+        }
+    }
+
+    public void flipVertical(Collection<Integer> vertices) {
+        Bounds bounds = getBounds(vertices);
+        long y = (bounds.getMinY() + bounds.getMaxY()) / 2;
+        for (int i : vertices) {
+            this.vertices[i] = this.vertices[i].flipVertical(y);
         }
     }
 

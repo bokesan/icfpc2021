@@ -55,11 +55,19 @@ public class ProblemComponent extends JComponent {
         repaint();
     }
 
-    public void flip(boolean horizontal) {
-        if (horizontal) {
-            getFigure().flipHorizontal();
+    public void flip(boolean horizontal, boolean onlySelectedVertices) {
+        if (onlySelectedVertices) {
+            if (horizontal) {
+                getFigure().flipHorizontal(selectedVertices);
+            } else {
+                getFigure().flipVertical(selectedVertices);
+            }
         } else {
-            getFigure().flipVertical();
+            if (horizontal) {
+                getFigure().flipHorizontal();
+            } else {
+                getFigure().flipVertical();
+            }
         }
         repaint();
     }

@@ -9,9 +9,17 @@ public class RotateAction extends AbstractAction {
     private final int degrees;
 
     public RotateAction(Gui gui, int degrees) {
-        super("Rot " + ((degrees < 0) ? (-degrees + "° CCW") : (degrees + "° CW")));
+        super(getLabel(degrees));
         this.gui = gui;
         this.degrees = degrees;
+    }
+
+    private static String getLabel(int a) {
+        if (a < 0) {
+            return "\u2b6f " + (-a) + "°";
+        } else {
+            return "\u2b6e " + a + "°";
+        }
     }
 
     @Override

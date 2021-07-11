@@ -77,6 +77,10 @@ public class Gui {
         controls.add(new JButton(new TranslateAction(this, 1, 0, true)));
         controls.add(new JButton(new TranslateAction(this, 0, -1, true)));
         controls.add(new JButton(new TranslateAction(this, 0, 1, true)));
+        controls.addSeparator();
+        controls.add(new JButton(new FlipAction(this, true, true)));
+        controls.add(new JButton(new FlipAction(this, false, true)));
+        controls.addSeparator();
         JButton clearSelection = new JButton("Clear");
         controls.add(clearSelection);
         clearSelection.addActionListener(e -> image.clearSelection());

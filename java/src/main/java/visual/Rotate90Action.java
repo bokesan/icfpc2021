@@ -8,7 +8,7 @@ public class Rotate90Action extends AbstractAction {
     private final Gui gui;
 
     public Rotate90Action(Gui gui) {
-        super("Rot CW");
+        super("\u2b6e 90°");
         this.gui = gui;
     }
 

@@ -11,11 +11,7 @@ public class TranslateAction extends AbstractAction {
     private final boolean onlySelectedVertices;
 
     public TranslateAction(Gui gui, int x, int y) {
-        super(getLabel(x, y));
-        this.gui = gui;
-        this.x = x;
-        this.y = y;
-        this.onlySelectedVertices = false;
+        this(gui, x, y, false);
     }
 
     public TranslateAction(Gui gui, int x, int y, boolean onlySelectedVertices) {
