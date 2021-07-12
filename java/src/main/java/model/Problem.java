@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.BitSet;
 
 public class Problem {
 
@@ -115,7 +116,7 @@ public class Problem {
         return true;
     }
 
-    public boolean isValidFor(int[] vertexIndices) {
+    public boolean isValidFor(BitSet vertexIndices) {
         int n = getFigure().getNumEdges();
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
@@ -134,7 +135,7 @@ public class Problem {
         return true;
     }
 
-    public boolean insideIsValidFor(int[] vertexIndices) {
+    public boolean insideIsValidFor(BitSet vertexIndices) {
         int n = getFigure().getNumEdges();
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
@@ -149,7 +150,7 @@ public class Problem {
         return true;
     }
 
-    public boolean lengthIsValidFor(int[] vertexIndices) {
+    public boolean lengthIsValidFor(BitSet vertexIndices) {
         int n = getFigure().getNumEdges();
         for (int i = 0; i < n; i++) {
             Figure.Edge edge = figure.getEdge(i);
@@ -163,22 +164,8 @@ public class Problem {
         return true;
     }
 
-    private static boolean shouldCheck(Figure.Edge edge, int[] vertexIndices) {
-        boolean have1 = false;
-        boolean have2 = false;
-        for (int i : vertexIndices) {
-            if (i == edge.getVertex1()) {
-                have1 = true;
-                if (have2) return true;
-            }
-            if (i == edge.getVertex2()) {
-                have2 = true;
-                if (have1) return true;
-            }
-        }
-        return false;
-
-        // return ArrayUtils.contains(vertexIndices, edge.getVertex1()) && ArrayUtils.contains(vertexIndices, edge.getVertex2());
+    private static boolean shouldCheck(Figure.Edge edge, BitSet vertexIndices) {
+        return vertexIndices.get(edge.getVertex1()) && vertexIndices.get(edge.getVertex2());
     }
 
     public boolean isValidEdge(int i) {

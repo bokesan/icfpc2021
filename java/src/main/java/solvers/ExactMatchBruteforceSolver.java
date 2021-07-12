@@ -1,7 +1,6 @@
 package solvers;
 
 import model.*;
-import util.ArrayUtils;
 
 import java.util.*;
 
@@ -33,14 +32,14 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
             return null;
         }
 
-        return tryBorder(0, new int[n], new boolean[m]);
+        return tryBorder(0, new BitSet(), new boolean[m]);
     }
 
     /**
      * Try placing hole vertices.
      * @param holeIndex the next hole vertex to place
      */
-    private Pose tryBorder(int holeIndex, int[] borderVertices, boolean[] used) {
+    private Pose tryBorder(int holeIndex, BitSet borderVertices, boolean[] used) {
         Polygon hole = problem.getHole();
         if (holeIndex == hole.getNumVertices()) {
             return tryFit(borderVertices);
@@ -50,7 +49,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
         for (int i = 0; i < n; i++) {
             if (!used[i]) {
                 figure.moveVertex(i, point);
-                borderVertices[holeIndex] = i;
+                borderVertices.set(i);
                 used[i] = true;
                 Pose solution = tryBorder(holeIndex + 1, borderVertices, used);
                 if (solution != null) {
@@ -62,14 +61,14 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
         return null;
     }
 
-    private Pose tryFit(int[] borderVertices) {
+    private Pose tryFit(BitSet borderVertices) {
         if (!problem.isValidFor(borderVertices)) {
             if (DEBUG) {
                 if (!problem.lengthIsValidFor(borderVertices)) {
-                    log("Vertex length not valid for " + Arrays.toString(borderVertices));
+                    log("Vertex length not valid for " + borderVertices);
                 }
                 if (!problem.insideIsValidFor(borderVertices)) {
-                    log("Inside check failed for " + Arrays.toString(borderVertices));
+                    log("Inside check failed for " + borderVertices);
                 }
             }
             return null;
@@ -77,31 +76,29 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
         // count edges between border vertices
         int numEdges = 0;
         for (Figure.Edge edge : figure.getEdges()) {
-            if (ArrayUtils.contains(borderVertices, edge.getVertex1()) && ArrayUtils.contains(borderVertices, edge.getVertex2())) {
+            if (borderVertices.get(edge.getVertex1()) && borderVertices.get(edge.getVertex2())) {
                 numEdges++;
             }
         }
-        if (numEdges != borderVertices.length) {
+        if (numEdges != problem.getHole().getNumVertices()) {
             if (DEBUG) {
-                log("Probably not a border. " + borderVertices.length + " vertices, but " + numEdges + " edges: "
-                        + Arrays.toString(borderVertices));
+                log("Probably not a border. " + problem.getHole().getNumVertices() + " vertices, but " + numEdges + " edges: "
+                        + borderVertices);
             }
             if (numEdges <= 1)
                 return null;
         }
-        log("Border found: " + Arrays.toString(borderVertices) + ". Placing remaining vertices.");
+        log("Border found: " + borderVertices + ". Placing remaining vertices.");
 
         int n = figure.getNumVertices();
-        if (borderVertices.length == n) {
+        if (problem.getHole().getNumVertices() == n) {
             Pose pose = figure.getPose();
             log("Found solution. " + pose);
             return pose;
         }
         // place other vertices using their constraints
         Set<Integer> placed = new HashSet<>();
-        for (int i : borderVertices) {
-            placed.add(i);
-        }
+        borderVertices.stream().forEach(placed::add);
 
         if (DEBUG) {
             log("Vertices left to place: " + (n - placed.size()));
@@ -255,12 +252,12 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
 
     private boolean tryToPlace(int vertex, Point newPosition, Set<Integer> placed) {
         figure.moveVertex(vertex, newPosition);
-        int[] ps = new int[placed.size() + 1];
+        BitSet ps = new BitSet();
         int i = 0;
         for (int v : placed) {
-            ps[i++] = v;
+            ps.set(v);
         }
-        ps[i] = vertex;
+        ps.set(vertex);
         boolean success = problem.isValidFor(ps);
         if (DEBUG) {
             log("Placing vertex " + vertex + " at " + newPosition + ": " + success);
