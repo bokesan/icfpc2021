@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Brutus extends AbstractSolver {
 
-    private static final int RESEED_INTERVAL = 200000;
+    private static final int RESEED_INTERVAL = 20000;
 
     private int reseedCounter;
 

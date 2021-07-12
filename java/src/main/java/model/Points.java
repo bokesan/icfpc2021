@@ -7,8 +7,7 @@ public class Points {
         long ysum = a.getY() + b.getY();
         if ((xsum & 1) != 0 || (ysum & 1) != 0)
             return null;
-
-        return Point.of((a.getX() + b.getX()) / 2, (a.getY() + b.getY()) / 2);
+        return Point.of(xsum / 2, ysum / 2);
     }
 
     public static double distance(Point p1, Point p2) {

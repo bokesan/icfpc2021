@@ -1,7 +1,6 @@
 package model;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.ImmutableList;
 import math.BigRational;
 
 import java.util.ArrayList;
@@ -58,13 +57,27 @@ public class Polygon {
         return awtPolygon.contains((int) p.getX(), (int) p.getY());
     }
 
+    public boolean contains(int x, int y) {
+        for (int i = 0; i < vertices.length; i++) {
+            int j = ((i == 0) ? vertices.length : i) - 1;
+            if (Lines.containsPoint(vertices[i], vertices[j], x, y)) {
+                return true;
+            }
+        }
+        return awtPolygon.contains(x, y);
+    }
+
     public boolean containsEdge(Point p1, Point p2) {
         if (!(contains(p1) && contains(p2))) {
             return false;
         }
-        Point mid = Points.middle(p1, p2);
-        if (mid != null && !contains(mid))
-            return false;
+        // Silly attempt at making this correct. Does not help
+        int xsum = (int) (p1.getX() + p2.getX());
+        int ysum = (int) (p1.getY() + p2.getY());
+        if ((xsum & 1) == 0 && (ysum & 1) == 0) {
+            if (!contains(xsum / 2, ysum / 2))
+                return false;
+        }
         for (int i = 0; i < vertices.length; i++) {
             int j = ((i == 0) ? vertices.length : i) - 1;
             /*

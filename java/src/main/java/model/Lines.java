@@ -22,6 +22,16 @@ public class Lines {
         return da <= dist && db <= dist && (Math.sqrt(da) + Math.sqrt(db)) == Math.sqrt(dist);
     }
 
+    public static boolean containsPoint(Point a, Point b, int x, int y) {
+        if (a.isEqual(x, y) || b.isEqual(x, y)) {
+            return true;
+        }
+        long da = a.distanceSquared(x, y);
+        long db = b.distanceSquared(x, y);
+        long dist = a.distanceSquared(b);
+        return da <= dist && db <= dist && (Math.sqrt(da) + Math.sqrt(db)) == Math.sqrt(dist);
+    }
+
     /**
      * Line segment slope (&Delta;y / &Delta;x).
      */

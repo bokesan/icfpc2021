@@ -88,8 +88,9 @@ public class Jan extends AbstractSolver {
                 for (Point p : pointsInsideHole) {
                     figure.moveVertex(v, p);
                     if (problem.isValidFor(knownVertices)) {
-                        // FIXME: really?
-                        return search(knownVertices);
+                        if (search(knownVertices)) {
+                            return true;
+                        }
                     }
                 }
                 knownVertices.clear(v);

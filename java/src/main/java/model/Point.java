@@ -97,12 +97,20 @@ public class Point {
         return square(getX() - q.getX()) + square(getY() - q.getY());
     }
 
+    public long distanceSquared(int x, int y) {
+        return square(getX() - x) + square(getY() - y);
+    }
+
     private static long square(long x) {
         return x * x;
     }
 
     public Point negate() {
         return of(-x, -y);
+    }
+
+    public boolean isEqual(int x, int y) {
+        return this.x == x && this.y == y;
     }
 
     @Override

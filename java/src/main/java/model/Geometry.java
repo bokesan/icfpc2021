@@ -131,6 +131,8 @@ public class Geometry {
         return x * x;
     }
 
+    // There and the following were taken from Wolfram Alpha with the input:
+    //   solve (x - p)^2 + (y - q)^2 = a, (x - r)^2 + (y - s)^2 = b for x,y
     private static double compX(boolean first, double a, double b, double p, double q, double r, double s) {
         double sign = first ? -1 : 1;
         return (sign * sqrt(
