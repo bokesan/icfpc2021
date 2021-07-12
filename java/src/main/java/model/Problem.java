@@ -191,13 +191,12 @@ public class Problem {
     }
 
     public long dislikes() {
-        int n = getHole().getNumVertices();
-        int m = getFigure().getNumVertices();
+        Point[] solution = getFigure().getVertices();
         long sum = 0;
-        for (int i = 0; i < n; i++) {
+        for (Point holeVertex : getHole().getVertices()) {
             long minDistance = Long.MAX_VALUE;
-            for (int k = 0; k < m; k++) {
-                minDistance = Math.min(minDistance, getHole().getVertex(i).distanceSquared(getFigure().getVertex(k)));
+            for (Point vertex : solution) {
+                minDistance = Math.min(minDistance, holeVertex.distanceSquared(vertex));
             }
             sum += minDistance;
         }
