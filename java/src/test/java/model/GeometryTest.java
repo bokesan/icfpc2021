@@ -1,5 +1,6 @@
 package model;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -50,4 +51,34 @@ public class GeometryTest {
         assertEquals(Point.of(5, expectedY), p3_1);
         assertEquals(Point.of(5, -expectedY), p3_2);
     }
+
+    @Test
+    public void testFlipSimpleH() {
+        Point a = Point.of(0, 1);
+        Point b = Point.of(2, 1);
+        Point p = Point.of(4, 2);
+        Point p1 = Geometry.flip(a, b, p);
+        assertEquals(4, p1.getX());
+        assertEquals(0, p1.getY());
+    }
+
+    @Test
+    public void testFlipSimpleV() {
+        Point a = Point.of(2, 1);
+        Point b = Point.of(2, 10);
+        Point p = Point.of(0, 5);
+        Point p1 = Geometry.flip(a, b, p);
+        assertEquals(4, p1.getX());
+        assertEquals(5, p1.getY());
+    }
+
+    @Test
+    public void testFlipGeneral() {
+        Point a = Point.origin();
+        Point b = Point.of(20,20);
+        Point p = Point.of(0, 1);
+        Point p1 = Geometry.flip(a, b, p);
+        assertEquals(Point.of(1, 0), p1);
+    }
+
 }

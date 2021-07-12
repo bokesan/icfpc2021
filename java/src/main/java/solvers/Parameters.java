@@ -2,6 +2,13 @@ package solvers;
 
 public class Parameters {
 
+    private int maxPositions = 2000;
+
+    private int translationX = 0;
+    private int translationY = 0;
+
+    private boolean writeIntermediateResults = true;
+
     public int getMaxPositions() {
         return maxPositions;
     }
@@ -18,11 +25,19 @@ public class Parameters {
         this.writeIntermediateResults = writeIntermediateResults;
     }
 
-    private int maxPositions = 2000;
+    public int getTranslationX() {
+        return translationX;
+    }
 
-    private boolean writeIntermediateResults = true;
+    public void setTranslationX(int translationX) {
+        this.translationX = translationX;
+    }
 
+    public int getTranslationY() {
+        return translationY;
+    }
 
-
-
+    public void setTranslationY(int translationY) {
+        this.translationY = translationY;
+    }
 }

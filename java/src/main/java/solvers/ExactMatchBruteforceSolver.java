@@ -201,7 +201,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                     log("HAIRY 200 [vertex: " + vertex + ", edges: " + edge1 + ", " + edge2 + ", dest: " + p1 + "]");
                     return false;
                 }
-                Point[] ps = Geometry.getPointsAtDistance(p1, figure.getOriginalEdgeLengthSquared(edge1),
+                Point[] ps = Geometry.getPointsAtDistanceWithArea(p1, figure.getOriginalEdgeLengthSquared(edge1),
                                                           p2, figure.getOriginalEdgeLengthSquared(edge2));
                 for (Point p : ps) {
                     if (tryToPlace(vertex, p, placed)) {
@@ -222,7 +222,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                     }
                     ei++;
                 }
-                ps = Geometry.getPointsAtDistance(p1, figure.getOriginalEdgeLengthSquared(edge1),
+                ps = Geometry.getPointsAtDistanceWithArea(p1, figure.getOriginalEdgeLengthSquared(edge1),
                                                   p2, figure.getOriginalEdgeLengthSquared(edge2));
                 if (ps.length == 0) {
                     return false;
@@ -233,7 +233,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                     Point q1 = figure.getVertex(figure.getEdge(edge1).getOtherVertex(vertex));
                     Point q2 = figure.getVertex(figure.getEdge(edge2).getOtherVertex(vertex));
                     if (!q2.equals(p1)) {
-                        Point[] ps2 = Geometry.getPointsAtDistance(q1, figure.getOriginalEdgeLengthSquared(e1),
+                        Point[] ps2 = Geometry.getPointsAtDistanceWithArea(q1, figure.getOriginalEdgeLengthSquared(e1),
                                 q2, figure.getOriginalEdgeLengthSquared(e2));
                         for (Point p : ps2) {
                             for (Point q : ps) {

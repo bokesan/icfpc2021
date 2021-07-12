@@ -1,10 +1,7 @@
 import com.google.common.collect.ImmutableList;
 import model.Pose;
 import model.Problem;
-import solvers.Brutus;
-import solvers.ExactMatchBruteforceSolver;
-import solvers.Parameters;
-import solvers.Solver;
+import solvers.*;
 import visual.Gui;
 
 import java.io.IOException;
@@ -42,7 +39,13 @@ public class Launcher {
                         command = Command.SOLVE;
                         break;
                     case "-max-positions":
-                        solverParameters.setMaxPositions(Integer.parseInt(args[+i]));
+                        solverParameters.setMaxPositions(Integer.parseInt(args[++i]));
+                        break;
+                    case "-translate-x":
+                        solverParameters.setTranslationX(Integer.parseInt(args[++i]));
+                        break;
+                    case "-translate-y":
+                        solverParameters.setTranslationY(Integer.parseInt(args[++i]));
                         break;
                     default:
                         System.err.println("Unknown option: " + args[i]);
@@ -61,7 +64,7 @@ public class Launcher {
                     usage();
                     return;
                 }
-                showGui(files);
+                showGui(files, solverParameters);
                 break;
             case SOLVE:
                 solve(files, solverParameters);
@@ -77,8 +80,9 @@ public class Launcher {
         System.err.println("  run -solve file..     auto-solve problems from files");
     }
 
-    private static void showGui(List<String> files) throws IOException {
+    private static void showGui(List<String> files, Parameters parameters) throws IOException {
         Problem problem = Problem.loadFromFile(files.get(0));
+        problem.getFigure().translate(parameters.getTranslationX(), parameters.getTranslationY());
         System.out.println(problem);
         if (files.size() > 1) {
             Pose pose = Pose.loadFromFile(files.get(1));
@@ -91,7 +95,8 @@ public class Launcher {
     private static void solve(List<String> files, Parameters parameters) {
         List<Function<Parameters, Solver>> solvers = ImmutableList.of(
                 // Brutus::new
-                ExactMatchBruteforceSolver::new
+                // ExactMatchBruteforceSolver::new
+                HairballSolver::new
         );
 
         combinations(files, solvers).parallel().forEach(entry -> {
@@ -101,6 +106,7 @@ public class Launcher {
             System.out.format("Solving %s with %s...\n", file, solverName);
             try {
                 Problem problem = Problem.loadFromFile(file);
+                problem.getFigure().translate(parameters.getTranslationX(), parameters.getTranslationY());
                 Pose pose = solver.solve(problem);
                 if (pose == null) {
                     System.out.format("%s with %s: no solution.\n", file, solverName);

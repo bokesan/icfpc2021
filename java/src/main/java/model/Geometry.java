@@ -35,6 +35,51 @@ public class Geometry {
             double x = term1 / (2.0 * (p - r));
             double y1 = 0.5 * (2 * s - term2);
             double y2 = 0.5 * (2 * s + term2);
+            Point r1 = Point.of(Math.round(x), Math.round(y1));
+            Point r2 = Point.of(Math.round(x), Math.round(y2));
+            return new Point[]{r1, r2};
+        } else {
+            double x1 = compX(true, a, b, p, q, r, s);
+            double y1 = compY(true, a, b, p, q, r, s);
+            double x2 = compX(false, a, b, p, q, r, s);
+            double y2 = compY(false, a, b, p, q, r, s);
+            Point r1 = Point.of(Math.round(x1), Math.round(y1));
+            Point r2 = Point.of(Math.round(x2), Math.round(y2));
+            return new Point[]{r1, r2};
+        }
+    }
+
+    public static Point[] getPointsAtDistanceWithArea(Point p1, long a, Point p2, long b) {
+        if (p1.equals(p2)) {
+            throw new IllegalArgumentException("Identical points");
+        }
+
+        double dist = sqrt(p1.distanceSquared(p2));
+        double d1 = sqrt(a);
+        double delta = dist - (d1 + sqrt(b));
+        if (delta > 0) {
+            // no solution
+            return new Point[0];
+        }
+        if (delta == 0) {
+            long dx = p2.getX() - p1.getX();
+            long dy = p2.getY() - p1.getY();
+            double scale = d1 / dist;
+            Point p = p1.translate(Math.round(scale * dx), Math.round(scale * dy));
+            return new Point[]{p};
+        }
+
+        long p = p1.getX();
+        long q = p1.getY();
+        long r = p2.getX();
+        long s = p2.getY();
+
+        if (q == s && p != r) {
+            long term1 = -a + b + p * p - r * r;
+            double term2 = 2 * sqrt((r * term1)/ (double) (p - r) - sq(term1) / (4.0 * sq(p - r)) + b -r*r);
+            double x = term1 / (2.0 * (p - r));
+            double y1 = 0.5 * (2 * s - term2);
+            double y2 = 0.5 * (2 * s + term2);
             return allPoints(x, y1, y2);
             // Point r1 = Point.of(Math.round(x), Math.round(y1));
             // Point r2 = Point.of(Math.round(x), Math.round(y2));
@@ -206,5 +251,40 @@ public class Geometry {
                 + 2 * q * s*s*s
                 - r*r * s*s
                 - s*s*s*s) / (2.0 * (q - s) * (p*p - 2 * p * r + q*q - 2 * q * s + r*r + s*s));
+    }
+
+    /**
+     * Flip p about the line given by a and b.
+     */
+    public static Point flip(Point a, Point b, Point p) {
+        if (a.getX() == b.getX()) {
+            return p.flipHorizontal(a.getX());
+        }
+        if (a.getY() == b.getY()) {
+            return p.flipVertical(a.getY());
+        }
+
+        double dx  = (double) (b.getX() - a.getX());
+        double dy  = (double) (b.getY() - a.getY());
+
+        double a1   = (dx*dx - dy*dy) / (dx*dx + dy*dy);
+        double b1   = 2 * dx * dy / (dx*dx + dy*dy);
+
+        long x2 = Math.round(a1 * (p.getX() - a.getX()) + b1 * (p.getY() - a.getY()) + a.getX());
+        long y2 = Math.round(b1 * (p.getX() - a.getX()) - a1 * (p.getY() - a.getY()) + a.getY());
+
+        return Point.of(x2,y2);
+
+        /*
+        Point[] ps = getPointsAtDistance(a, p.distanceSquared(a), b, p.distanceSquared(b));
+        if (ps.length != 2) {
+            return null;
+        }
+        if (ps[0].equals(p)) {
+            return ps[1];
+        }
+        return ps[0];
+
+         */
     }
 }
