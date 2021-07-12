@@ -80,6 +80,11 @@ public class Polygon {
         return true;
     }
 
+    public long getEdgeLengthSquared(int startVertex) {
+        int endVertex = (startVertex == getNumVertices() - 1) ? 0 : (startVertex + 1);
+        return getVertex(startVertex).distanceSquared(getVertex(endVertex));
+    }
+
     public static String toJson(Point[] vertices) {
         StringBuilder b = new StringBuilder();
         String sep = "[";

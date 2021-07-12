@@ -68,6 +68,14 @@ public class Problem {
         return name;
     }
 
+    public long getMinLength(int edge) {
+        return minLength[edge];
+    }
+
+    public long getMaxLength(int edge) {
+        return maxLength[edge];
+    }
+
     public boolean isValid() {
         int n = getFigure().getNumEdges();
         for (int i = 0; i < n; i++) {

@@ -94,7 +94,8 @@ public class Launcher {
 
     private static void solve(List<String> files, Parameters parameters) {
         List<Function<Parameters, Solver>> solvers = ImmutableList.of(
-                Brutus::new
+                // Brutus::new
+                Jan::new
                 // ExactMatchBruteforceSolver::new
                 // HairballSolver::new
         );

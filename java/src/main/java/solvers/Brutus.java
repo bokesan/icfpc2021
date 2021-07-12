@@ -159,7 +159,7 @@ public class Brutus extends AbstractSolver {
         if (p1.equals(p2)) {
             return null;
         }
-        Point[] ps = Geometry.getPointsAtDistanceWithArea(p1, figure.getOriginalEdgeLengthSquared(edge1),
+        Point[] ps = Geometry.getPointsAtDistance(p1, figure.getOriginalEdgeLengthSquared(edge1),
                 p2, figure.getOriginalEdgeLengthSquared(edge2));
         Point single = null;
         for (Point p : ps) {
