@@ -35,31 +35,63 @@ public class Geometry {
             double x = term1 / (2.0 * (p - r));
             double y1 = 0.5 * (2 * s - term2);
             double y2 = 0.5 * (2 * s + term2);
-            Point r1 = Point.of(Math.round(x), Math.round(y1));
-            Point r2 = Point.of(Math.round(x), Math.round(y2));
-            return new Point[]{r1, r2};
+            return allPoints(x, y1, y2);
+            // Point r1 = Point.of(Math.round(x), Math.round(y1));
+            // Point r2 = Point.of(Math.round(x), Math.round(y2));
+            // return new Point[]{r1, r2};
         } else {
             double x1 = compX(true, a, b, p, q, r, s);
             double y1 = compY(true, a, b, p, q, r, s);
             double x2 = compX(false, a, b, p, q, r, s);
             double y2 = compY(false, a, b, p, q, r, s);
-            Point r1 = Point.of(Math.round(x1), Math.round(y1));
-            Point r2 = Point.of(Math.round(x2), Math.round(y2));
-            return new Point[]{r1, r2};
+            return allPoints(x1, x2, y1, y2);
+            // Point r1 = Point.of(Math.round(x1), Math.round(y1));
+            // Point r2 = Point.of(Math.round(x2), Math.round(y2));
+            // return new Point[]{r1, r2};
         }
     }
 
+    private static Point[] allPoints(double x, double y1, double y2) {
+        long x1 = (long) Math.floor(x);
+        long x2 = (long) Math.ceil(x);
+        long y11 = (long) Math.floor(y1);
+        long y12 = (long) Math.ceil(y1);
+        long y21 = (long) Math.floor(y2);
+        long y22 = (long) Math.ceil(y2);
+        return new Point[]{Point.of(x1, y11), Point.of(x1, y12), Point.of(x1, y21), Point.of(x1, y22),
+                Point.of(x2, y11), Point.of(x2, y12), Point.of(x2, y21), Point.of(x2, y22)};
+    }
+
+    private static Point[] allPoints(double x1, double x2, double y1, double y2) {
+        long x11 = (long) Math.floor(x1);
+        long x12 = (long) Math.ceil(x1);
+        long x21 = (long) Math.floor(x2);
+        long x22 = (long) Math.ceil(x2);
+        long y11 = (long) Math.floor(y1);
+        long y12 = (long) Math.ceil(y1);
+        long y21 = (long) Math.floor(y2);
+        long y22 = (long) Math.ceil(y2);
+        return new Point[]{Point.of(x11, y11), Point.of(x11, y12), Point.of(x11, y21), Point.of(x11, y22),
+                Point.of(x12, y11), Point.of(x12, y12), Point.of(x12, y21), Point.of(x12, y22),
+                Point.of(x21, y11), Point.of(x21, y12), Point.of(x21, y21), Point.of(x21, y22),
+                Point.of(x22, y11), Point.of(x22, y12), Point.of(x22, y21), Point.of(x22, y22)
+        };
+    }
 
     private static long sq(long x) {
         return x * x;
     }
 
-    private static double compX(boolean first, long a, long b, long p, long q, long r, long s) {
+    private static double sq(double x) {
+        return x * x;
+    }
+
+    private static double compX(boolean first, double a, double b, double p, double q, double r, double s) {
         double sign = first ? -1 : 1;
         return (sign * sqrt(
                         -sq(q - s)
                                 * (a*a
-                                - 2 * a * b
+                                - 2.0 * a * b
                                 - 2 * a * p * p
                                 + 4 * a * p * r
                                 - 2 * a * q * q
@@ -116,10 +148,10 @@ public class Geometry {
                 );
     }
 
-    private static double compY(boolean first, long a, long b, long p, long q, long r, long s) {
+    private static double compY(boolean first, double a, double b, double p, double q, double r, double s) {
         double sign = first ? 1 : -1;
-        long term1 = a * a
-                - 2 * a * b
+        double term1 = a * a
+                - 2.0 * a * b
                 - 2 * a * p * p
                 + 4 * a * p * r
                 - 2 * a * q * q

@@ -2,7 +2,6 @@ package model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import util.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,7 +164,21 @@ public class Problem {
     }
 
     private static boolean shouldCheck(Figure.Edge edge, int[] vertexIndices) {
-        return ArrayUtils.contains(vertexIndices, edge.getVertex1()) && ArrayUtils.contains(vertexIndices, edge.getVertex2());
+        boolean have1 = false;
+        boolean have2 = false;
+        for (int i : vertexIndices) {
+            if (i == edge.getVertex1()) {
+                have1 = true;
+                if (have2) return true;
+            }
+            if (i == edge.getVertex2()) {
+                have2 = true;
+                if (have1) return true;
+            }
+        }
+        return false;
+
+        // return ArrayUtils.contains(vertexIndices, edge.getVertex1()) && ArrayUtils.contains(vertexIndices, edge.getVertex2());
     }
 
     public boolean isValidEdge(int i) {

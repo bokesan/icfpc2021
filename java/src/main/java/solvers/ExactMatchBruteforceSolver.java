@@ -45,10 +45,11 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
         if (holeIndex == hole.getNumVertices()) {
             return tryFit(borderVertices);
         }
+        Point point = hole.getVertex(holeIndex);
         int n = figure.getNumVertices();
         for (int i = 0; i < n; i++) {
             if (!used[i]) {
-                figure.moveVertex(i, hole.getVertex(holeIndex));
+                figure.moveVertex(i, point);
                 borderVertices[holeIndex] = i;
                 used[i] = true;
                 Pose solution = tryBorder(holeIndex + 1, borderVertices, used);
@@ -85,10 +86,10 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                 log("Probably not a border. " + borderVertices.length + " vertices, but " + numEdges + " edges: "
                         + Arrays.toString(borderVertices));
             }
-            if (numEdges < borderVertices.length - 2)
+            if (numEdges <= 1)
                 return null;
         }
-        log("Border found. Placing remaining vertices.");
+        log("Border found: " + Arrays.toString(borderVertices) + ". Placing remaining vertices.");
 
         int n = figure.getNumVertices();
         if (borderVertices.length == n) {
@@ -127,15 +128,49 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
     }
 
     private boolean tryToPlace(int vertex, Set<Integer> placed) {
-        if (DEBUG) log("trying to place vertex " + vertex);
         List<Integer> edges = new ArrayList<>();
         int numEdges = figure.getNumEdges();
         boolean allValid = true;
+        int edgesToPlaced = 0;
         for (int i = 0; i < numEdges; i++) {
-            if (figure.getEdge(i).hasVertex(vertex)) {
+            Figure.Edge edge = figure.getEdge(i);
+            if (edge.hasVertex(vertex)) {
                 edges.add(i);
+                if (placed.contains(edge.getOtherVertex(vertex))) {
+                    edgesToPlaced++;
+                }
                 allValid = allValid && problem.isValidEdge(i);
             }
+        }
+
+        if (DEBUG) {
+            StringBuilder b = new StringBuilder();
+            b.append("Trying to place vertex ");
+            b.append(vertex);
+            b.append(". with edges to ");
+            String sep = "";
+            for (int edge : edges) {
+                Figure.Edge edge1 = figure.getEdge(edge);
+                int dest = edge1.getOtherVertex(vertex);
+                b.append(sep);
+                b.append(dest);
+                b.append(':');
+                b.append(placed.contains(dest) ? figure.getVertex(dest) : "[?,?]");
+                b.append('(');
+                b.append(String.format("%.1f", Math.sqrt(figure.getOriginalEdgeLengthSquared(edge))));
+                b.append(')');
+                sep = ", ";
+            }
+            b.append('.');
+            log(b.toString());
+        }
+
+        if (edgesToPlaced < 3 && edgesToPlaced < edges.size()) {
+            // not yet ready for placement
+            if (DEBUG) {
+                log("Not yet ready for placement");
+            }
+            return false;
         }
 
         if (allValid && !edges.isEmpty()) {
@@ -157,7 +192,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                 return true;
             case 1:
                 // TODO: place
-                log("HAIRY!");
+                log("HAIRY 100! Just one edge to " + figure.getVertex(figure.getEdge(edges.get(0)).getOtherVertex(vertex)));
                 return false;
             case 2:
                 int edge1 = edges.get(0);
@@ -166,7 +201,7 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                 Point p1 = figure.getVertex(figure.getEdge(edge1).getOtherVertex(vertex));
                 Point p2 = figure.getVertex(figure.getEdge(edge2).getOtherVertex(vertex));
                 if (p1.equals(p2)) {
-                    log("HAIRY 200 [vertex: " + vertex + ", edges: " + edge1 + ", " + edge2 + "]");
+                    log("HAIRY 200 [vertex: " + vertex + ", edges: " + edge1 + ", " + edge2 + ", dest: " + p1 + "]");
                     return false;
                 }
                 Point[] ps = Geometry.getPointsAtDistance(p1, figure.getOriginalEdgeLengthSquared(edge1),
@@ -204,10 +239,10 @@ public class ExactMatchBruteforceSolver extends AbstractSolver {
                         Point[] ps2 = Geometry.getPointsAtDistance(q1, figure.getOriginalEdgeLengthSquared(e1),
                                 q2, figure.getOriginalEdgeLengthSquared(e2));
                         for (Point p : ps2) {
-                            if ((p.equals(ps[0]) ||
-                                    (ps.length > 1 && p.equals(ps[1])))
-                                    && tryToPlace(vertex, p, placed)) {
-                                return true;
+                            for (Point q : ps) {
+                                if (p.equals(q) && tryToPlace(vertex, p, placed)) {
+                                    return true;
+                                }
                             }
                         }
                     }
