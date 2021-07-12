@@ -1,9 +1,6 @@
 package solvers;
 
-import model.Bounds;
-import model.Point;
-import model.Pose;
-import model.Problem;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,21 +103,77 @@ public class Brutus extends AbstractSolver {
             return;
         }
 
-        // examine just a random subset of points for large holes
-        int n = Math.min(pointsInsideHole.size(), Math.max(parameters.getMaxPositions(), problem.getFigure().getNumVertices()));
-        for (int k = 0; k < n; k++) {
-            Point p = pointsInsideHole.get(k);
-            problem.getFigure().moveVertex(i, p);
-            if (problem.isValidUpTo(i)) {
-                fill(i + 1);
-                if (bestDislikes == 0 || reseedCounter <= 0) {
-                    return;
+        Point pt = getUniquePosFor(i);
+        if (pt != null) {
+            fill(i + 1);
+        } else {
+            // examine just a random subset of points for large holes
+            int n = Math.min(pointsInsideHole.size(), Math.max(parameters.getMaxPositions(), problem.getFigure().getNumVertices()));
+            for (int k = 0; k < n; k++) {
+                Point p = pointsInsideHole.get(k);
+                problem.getFigure().moveVertex(i, p);
+                if (problem.isValidUpTo(i)) {
+                    fill(i + 1);
+                    if (bestDislikes == 0 || reseedCounter <= 0) {
+                        return;
+                    }
                 }
+                k++;
             }
-            k++;
         }
         if (i == 0) {
             exhaustive = true;
         }
     }
+
+    private Point getUniquePosFor(int vertex) {
+        List<Integer> edges = new ArrayList<>();
+        int nEdges = problem.getFigure().getNumEdges();
+        for (int i = 0; i < nEdges; i++) {
+            Figure.Edge edge = problem.getFigure().getEdge(i);
+            if (edge.hasVertex(vertex) && edge.getOtherVertex(vertex) < vertex) {
+                edges.add(i);
+            }
+        }
+        if (edges.size() == 2) {
+            return getUniquePosFor(vertex, edges.get(0), edges.get(1));
+        }
+        if (edges.size() >= 3) {
+            return getUniquePosFor(vertex, edges.get(0), edges.get(1), edges.get(2));
+        }
+        return null;
+    }
+
+    private Point getUniquePosFor(int vertex, Integer edge1, Integer edge2, Integer edge3) {
+        Point p = getUniquePosFor(vertex, edge1, edge2);
+        if (p != null) return p;
+        p = getUniquePosFor(vertex, edge1, edge3);
+        if (p != null) return p;
+        return getUniquePosFor(vertex, edge2, edge3);
+    }
+
+    private Point getUniquePosFor(int vertex, int edge1, int edge2) {
+        Figure figure = problem.getFigure();
+        Point p1 = figure.getVertex(figure.getEdge(edge1).getOtherVertex(vertex));
+        Point p2 = figure.getVertex(figure.getEdge(edge2).getOtherVertex(vertex));
+        if (p1.equals(p2)) {
+            return null;
+        }
+        Point[] ps = Geometry.getPointsAtDistanceWithArea(p1, figure.getOriginalEdgeLengthSquared(edge1),
+                p2, figure.getOriginalEdgeLengthSquared(edge2));
+        Point single = null;
+        for (Point p : ps) {
+            figure.moveVertex(vertex, p);
+            if (problem.isValidUpTo(vertex)) {
+                if (single == null) {
+                    single = p;
+                } else {
+                    // multiple
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
 }
