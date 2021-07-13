@@ -118,10 +118,10 @@ public class Brutus extends AbstractSolver {
                         return;
                     }
                 }
-                k++;
             }
         }
         if (i == 0) {
+            log("exhaustively tested everything, stopping.");
             exhaustive = true;
         }
     }
@@ -173,7 +173,10 @@ public class Brutus extends AbstractSolver {
                 }
             }
         }
-        return null;
+        if (single != null) {
+            figure.moveVertex(vertex, single);
+        }
+        return single;
     }
 
 }
