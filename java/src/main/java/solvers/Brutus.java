@@ -2,9 +2,8 @@ package solvers;
 
 import model.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Brutus extends AbstractSolver {
 
@@ -20,12 +19,27 @@ public class Brutus extends AbstractSolver {
 
     private final List<Point> pointsInsideHole = new ArrayList<>(2000);
 
+    private final AtomicBoolean timedOut = new AtomicBoolean();
+
     public Brutus(Parameters parameters) {
         super(parameters);
     }
 
     @Override
     public Pose solve(Problem problem) {
+        if (!parameters.getTimeout().isZero()) {
+            final Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                                     @Override
+                                     public void run() {
+                                         timedOut.set(true);
+                                         timer.cancel();
+                                     }
+                                 },
+                    parameters.getTimeout().toMillis()
+            );
+        }
+
         this.problem = problem;
         Bounds bounds = problem.getBounds();
         this.numVertices = problem.getFigure().getNumVertices();
@@ -48,23 +62,21 @@ public class Brutus extends AbstractSolver {
         exhaustive = false;
 
         int alt = 0;
-        while (bestDislikes > 0 && !exhaustive) {
+        while (bestDislikes > 0 && !(exhaustive || isTimedOut())) {
             if ((alt & 1) == 0)
                 moveHoleVerticesToFront(pointsInsideHole);
             alt++;
             reseedCounter = RESEED_INTERVAL;
             fill(0);
-            /*
-            if (bestSolution == null) {
-                System.out.println("Reseeding...");
-            } else {
-                System.out.format("Reseeding... Best so far (%d dislikes): %s\n", bestDislikes, Polygon.toPose(bestSolution));
-            }
-             */
             Collections.shuffle(pointsInsideHole);
+        }
+
+        if (isTimedOut()) {
+            log("timed out after " + parameters.getTimeout());
         }
         if (bestSolution != null) {
             log(String.format("Best solution (%d dislikes): %s\n", bestDislikes, bestSolution));
+            problem.getFigure().setPose(bestSolution);
         }
         log("Done.");
 
@@ -96,7 +108,7 @@ public class Brutus extends AbstractSolver {
                     bestDislikes = dislikes;
                     bestSolution = problem.getFigure().getPose();
                     log(String.format("Solution with %d dislikes: %s\n", dislikes, problem.getFigure().getPose()));
-                    logConsole(String.format("new solution with %d dislikes found.", dislikes));
+                    // logConsole(String.format("new solution with %d dislikes found.", dislikes));
                     reseedCounter = RESEED_INTERVAL;
                 }
             }
@@ -114,9 +126,12 @@ public class Brutus extends AbstractSolver {
                 problem.getFigure().moveVertex(i, p);
                 if (problem.isValidUpTo(i)) {
                     fill(i + 1);
-                    if (bestDislikes == 0 || reseedCounter <= 0) {
+                    if (bestDislikes == 0) {
                         return;
                     }
+                }
+                if (reseedCounter <= 0 || isTimedOut()) {
+                    return;
                 }
             }
         }
@@ -177,6 +192,10 @@ public class Brutus extends AbstractSolver {
             figure.moveVertex(vertex, single);
         }
         return single;
+    }
+
+    private boolean isTimedOut() {
+        return timedOut.get();
     }
 
 }
