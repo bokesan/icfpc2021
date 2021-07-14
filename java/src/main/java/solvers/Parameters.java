@@ -1,5 +1,7 @@
 package solvers;
 
+import java.time.Duration;
+
 public class Parameters {
 
     private int maxPositions = 2000;
@@ -8,6 +10,8 @@ public class Parameters {
     private int translationY = 0;
 
     private boolean writeIntermediateResults = true;
+
+    private Duration timeout = Duration.ZERO;
 
     public int getMaxPositions() {
         return maxPositions;
@@ -23,6 +27,14 @@ public class Parameters {
 
     public void setWriteIntermediateResults(boolean writeIntermediateResults) {
         this.writeIntermediateResults = writeIntermediateResults;
+    }
+
+    public Duration getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(Duration timeout) {
+        this.timeout = timeout;
     }
 
     public int getTranslationX() {

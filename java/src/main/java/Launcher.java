@@ -1,3 +1,4 @@
+import checkers.units.quals.A;
 import com.google.common.collect.ImmutableList;
 import model.Pose;
 import model.Problem;
@@ -5,10 +6,13 @@ import solvers.*;
 import visual.Gui;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -40,6 +44,9 @@ public class Launcher {
                         break;
                     case "-max-positions":
                         solverParameters.setMaxPositions(Integer.parseInt(args[++i]));
+                        break;
+                    case "-timeout":
+                        solverParameters.setTimeout(Duration.parse(args[++i]));
                         break;
                     case "-translate-x":
                         solverParameters.setTranslationX(Integer.parseInt(args[++i]));
@@ -94,11 +101,15 @@ public class Launcher {
 
     private static void solve(List<String> files, Parameters parameters) {
         List<Function<Parameters, Solver>> solvers = ImmutableList.of(
-                Brutus::new,
-                Jan::new,
-                ExactMatchBruteforceSolver::new
+                Brutus::new
+                // Jan::new,
+                // ExactMatchBruteforceSolver::new
                 // HairballSolver::new
         );
+
+        AtomicInteger perfect = new AtomicInteger();
+        AtomicInteger failed = new AtomicInteger();
+        AtomicLong dislikes = new AtomicLong();
 
         combinations(files, solvers).parallel().forEach(entry -> {
             String file = entry.getKey();
@@ -110,15 +121,24 @@ public class Launcher {
                 problem.getFigure().translate(parameters.getTranslationX(), parameters.getTranslationY());
                 Pose pose = solver.solve(problem);
                 if (pose == null) {
-                    System.out.format("%s with %s: no solution.\n", file, solverName);
+                    System.out.format("%s with %s: no solution.\n", problem.getName(), solverName);
+                    failed.incrementAndGet();
                 } else {
-                    System.out.format("%s with %s: %s\n", file, solverName, pose);
+                    long diss = problem.dislikes();
+                    if (diss == 0) {
+                        perfect.incrementAndGet();
+                    } else {
+                        dislikes.addAndGet(diss);
+                    }
+                    System.out.format("%s with %s: %d dislikes, %s\n", problem.getName(), solverName, diss, pose);
                 }
             } catch (IOException e) {
                 System.err.println("Error loading " + file + ": " + e);
             }
         });
 
+        System.out.format("problems: %d\nperfect: %d\ndislikes: %d\nfailed to solve: %d\n",
+                files.size(), perfect.get(), dislikes.get(), failed.get());
     }
 
     private static Stream<Map.Entry<String, Function<Parameters, Solver>>> combinations(List<String> strings, List<Function<Parameters, Solver>> solvers) {
