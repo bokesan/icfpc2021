@@ -81,18 +81,12 @@ public class Geometry {
             double y1 = 0.5 * (2 * s - term2);
             double y2 = 0.5 * (2 * s + term2);
             return allPoints(x, y1, y2);
-            // Point r1 = Point.of(Math.round(x), Math.round(y1));
-            // Point r2 = Point.of(Math.round(x), Math.round(y2));
-            // return new Point[]{r1, r2};
         } else {
             double x1 = compX(true, a, b, p, q, r, s);
             double y1 = compY(true, a, b, p, q, r, s);
             double x2 = compX(false, a, b, p, q, r, s);
             double y2 = compY(false, a, b, p, q, r, s);
             return allPoints(x1, x2, y1, y2);
-            // Point r1 = Point.of(Math.round(x1), Math.round(y1));
-            // Point r2 = Point.of(Math.round(x2), Math.round(y2));
-            // return new Point[]{r1, r2};
         }
     }
 
@@ -131,7 +125,7 @@ public class Geometry {
         return x * x;
     }
 
-    // There and the following were taken from Wolfram Alpha with the input:
+    // These and the following were taken from Wolfram Alpha with the input:
     //   solve (x - p)^2 + (y - q)^2 = a, (x - r)^2 + (y - s)^2 = b for x,y
     private static double compX(boolean first, double a, double b, double p, double q, double r, double s) {
         double sign = first ? -1 : 1;
@@ -276,17 +270,5 @@ public class Geometry {
         long y2 = Math.round(b1 * (p.getX() - a.getX()) - a1 * (p.getY() - a.getY()) + a.getY());
 
         return Point.of(x2,y2);
-
-        /*
-        Point[] ps = getPointsAtDistance(a, p.distanceSquared(a), b, p.distanceSquared(b));
-        if (ps.length != 2) {
-            return null;
-        }
-        if (ps[0].equals(p)) {
-            return ps[1];
-        }
-        return ps[0];
-
-         */
     }
 }
