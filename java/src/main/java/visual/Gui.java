@@ -1,5 +1,6 @@
 package visual;
 
+import model.Force;
 import model.Problem;
 
 import javax.swing.*;
@@ -95,6 +96,13 @@ public class Gui {
         JToggleButton edgeLabels = new JToggleButton("Length", true);
         controls.add(edgeLabels);
         edgeLabels.addActionListener(e -> image.toggleEdgeLabels());
+        JButton applyForces = new JButton("Forces");
+        controls.add(applyForces);
+        applyForces.addActionListener(e -> {
+            Force force = new Force(image.getProblem(), image.getSelectedVertices());
+            force.apply(1);
+            image.repaint();
+        });
 
         frame.add(controls, BorderLayout.EAST);
         JPanel info = new JPanel();

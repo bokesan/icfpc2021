@@ -38,6 +38,10 @@ public class ProblemComponent extends JComponent {
         return getProblem().getFigure();
     }
 
+    public Set<Integer> getSelectedVertices() {
+        return selectedVertices;
+    }
+
     public void setProblem(Problem problem) {
         this.problem = problem;
         this.problemBounds = problem.getBounds();
