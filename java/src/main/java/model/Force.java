@@ -69,18 +69,19 @@ public class Force {
             Figure.Edge edge = figure.getEdge(ei);
             if (edge.hasVertex(vertex)) {
                 long len = figure.getEdgeLengthSquared(ei);
-                if (len > problem.getMaxLength(ei)) {
+                long original = figure.getOriginalEdgeLengthSquared(ei);
+                if (len > original) {
                     Point q = figure.getVertex(edge.getOtherVertex(vertex));
                     Vector2 v = Vector2.of(q.getX() - p.getX(), q.getY() - p.getY());
-                    double factor = (len - problem.getMaxLength(ei)) / (double) problem.getMaxLength(ei);
-                    v = v.scale(Math.max(factor * 0.2, 0.1));
+                    double factor = (len - original) / (double) original;
+                    v = v.scale(Math.min(factor * 0.25, 0.2));
                     force = force.add(v);
                 }
-                else if (len < problem.getMinLength(ei)) {
+                else if (len < original) {
                     Point q = figure.getVertex(edge.getOtherVertex(vertex));
                     Vector2 v = Vector2.of(p.getX() - q.getX(), p.getY() - q.getY());
-                    double factor = (problem.getMinLength(ei) - len) / (double) problem.getMinLength(ei);
-                    v = v.scale(Math.max(factor * 0.2, 0.1));
+                    double factor = (original - len) / (double) original;
+                    v = v.scale(Math.min(factor * 0.25, 0.2));
                     force = force.add(v);
                 }
             }
