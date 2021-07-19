@@ -100,7 +100,7 @@ public class Gui {
         controls.add(applyForces);
         applyForces.addActionListener(e -> {
             Force force = new Force(image.getProblem(), image.getSelectedVertices());
-            force.apply(100);
+            force.apply(100000);
             image.repaint();
         });
 

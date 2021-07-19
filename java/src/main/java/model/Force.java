@@ -11,6 +11,7 @@ public class Force {
     private final Problem problem;
     private final Set<Integer> vertices;
     private final Vector2[] forces;
+    private final Vector2[] exactVertices;
 
     public Force(Problem problem, Set<Integer> fixedVertices) {
         this.problem = problem;
@@ -21,25 +22,31 @@ public class Force {
                 vertices.add(i);
             }
         }
+        exactVertices = new Vector2[n];
         forces = new Vector2[problem.getFigure().getNumVertices()];
     }
 
     public boolean apply(int maxIterations) {
+        copyVerticesFromFigure();
+        boolean hasForces = true;
         for (int i = 0; i < maxIterations; i++) {
             if (!computeForces()) {
-                return false;
+                hasForces = false;
+                break;
             }
             if (!applyForces()) {
-                return false;
+                hasForces = false;
+                break;
             }
         }
-        return true;
+        copyVerticesIntoFigure();
+        return hasForces;
     }
 
     private boolean computeForces() {
         boolean hasForces = false;
         for (int i : vertices) {
-            forces[i] = on(problem, i);
+            forces[i] = forceOn(i);
             if (!forces[i].isZero()) {
                 hasForces = true;
             }
@@ -50,35 +57,34 @@ public class Force {
     private boolean applyForces() {
         boolean changed = false;
         for (int i : vertices) {
-            long dx = Math.round(forces[i].getX());
-            long dy = Math.round(forces[i].getY());
-            if (dx != 0 || dy != 0) {
-                problem.getFigure().moveVertex(i, problem.getFigure().getVertex(i).translate(dx, dy));
+            Vector2 force = forces[i];
+            if (!force.isZero()) {
+                exactVertices[i] = exactVertices[i].add(force);
                 changed = true;
             }
         }
         return changed;
     }
 
-    public Vector2 on(Problem problem, int vertex) {
+    private Vector2 forceOn(int vertex) {
         Figure figure = problem.getFigure();
-        Point p = figure.getVertex(vertex);
+        Vector2 p = exactVertices[vertex];
         int nEdges = figure.getNumEdges();
         Vector2 force = Vector2.of(0, 0);
         for (int ei = 0; ei < nEdges; ei++) {
             Figure.Edge edge = figure.getEdge(ei);
             if (edge.hasVertex(vertex)) {
-                long len = figure.getEdgeLengthSquared(ei);
+                int vertex2 = edge.getOtherVertex(vertex);
+                Vector2 q = exactVertices[vertex2];
+                double len = distSquared(p, q);
                 long original = figure.getOriginalEdgeLengthSquared(ei);
                 if (len > original) {
-                    Point q = figure.getVertex(edge.getOtherVertex(vertex));
                     Vector2 v = Vector2.of(q.getX() - p.getX(), q.getY() - p.getY());
                     double factor = (len - original) / (double) original;
                     v = v.scale(Math.min(factor * 0.25, 0.2));
                     force = force.add(v);
                 }
                 else if (len < original) {
-                    Point q = figure.getVertex(edge.getOtherVertex(vertex));
                     Vector2 v = Vector2.of(p.getX() - q.getX(), p.getY() - q.getY());
                     double factor = (original - len) / (double) original;
                     v = v.scale(Math.min(factor * 0.25, 0.2));
@@ -87,6 +93,31 @@ public class Force {
             }
         }
         return force;
+    }
+
+    private void copyVerticesFromFigure() {
+        Figure figure = problem.getFigure();
+        int n = figure.getNumVertices();
+        for (int i = 0; i < n; i++) {
+            Point vertex = figure.getVertex(i);
+            exactVertices[i] = Vector2.of(vertex.getX(), vertex.getY());
+        }
+    }
+
+    private void copyVerticesIntoFigure() {
+        Figure figure = problem.getFigure();
+        int n = figure.getNumVertices();
+        for (int i = 0; i < n; i++) {
+            Vector2 vertex = exactVertices[i];
+            Point p = Point.of(Math.round(vertex.getX()), Math.round(vertex.getY()));
+            figure.moveVertex(i, p);
+        }
+    }
+
+    private static double distSquared(Vector2 a, Vector2 b) {
+        double dx = b.getX() - a.getX();
+        double dy = b.getY() - a.getY();
+        return dx * dx + dy * dy;
     }
 
 }
