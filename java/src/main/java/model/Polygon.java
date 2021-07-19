@@ -48,13 +48,7 @@ public class Polygon {
     }
 
     public boolean contains(Point p) {
-        for (int i = 0; i < vertices.length; i++) {
-            int j = ((i == 0) ? vertices.length : i) - 1;
-            if (Lines.containsPoint(vertices[i], vertices[j], p)) {
-                return true;
-            }
-        }
-        return awtPolygon.contains((int) p.getX(), (int) p.getY());
+        return contains((int) p.getX(), (int) p.getY());
     }
 
     public boolean contains(int x, int y) {
@@ -71,26 +65,19 @@ public class Polygon {
         if (!(contains(p1) && contains(p2))) {
             return false;
         }
-        // Silly attempt at making this correct. Does not help
-        int xsum = (int) (p1.getX() + p2.getX());
-        int ysum = (int) (p1.getY() + p2.getY());
-        if ((xsum & 1) == 0 && (ysum & 1) == 0) {
-            if (!contains(xsum / 2, ysum / 2))
-                return false;
-        }
-        for (int i = 0; i < vertices.length; i++) {
-            int j = ((i == 0) ? vertices.length : i) - 1;
-            /*
-            if (vertices[i].equals(p1) && vertices[j].equals(p2))
-                return true;
-            if (vertices[j].equals(p1) && vertices[i].equals(p2))
-                return true;
-            */
-            if (Lines.intersect(vertices[i], vertices[j], p1, p2)) {
+        for (int i = 1; i < vertices.length; i++) {
+            if (crossesOrOverlaps(vertices[i-1], vertices[i], p1, p2)) {
                 return false;
             }
         }
-        return true;
+        return !crossesOrOverlaps(vertices[0], vertices[vertices.length-1], p1, p2);
+    }
+
+    private static boolean crossesOrOverlaps(Point a, Point b, Point c, Point d) {
+        if (Lines.isSubSegment(a, b, c, d)) {
+            return false;
+        }
+        return Lines.intersect(a, b, c, d) || Lines.overlaps(a, b, c, d);
     }
 
     public long getEdgeLengthSquared(int startVertex) {

@@ -125,4 +125,56 @@ public class PolygonTest {
         assertTrue(p.containsEdge(solution[3], solution[4]));
     }
 
+    /*
+        +---+   +----+
+        |    \ /     |
+        +     +      +
+         \          /
+          +        +
+         /          \
+        +     +      +
+        |    / \     |
+        +---+   +----+
+     */
+    @Test
+    public void testPolygonSpiky() {
+        Polygon p = fromPoints(new int[]{
+                0,0, 10,0, 15,5, 20,0, 30,0,
+                30,6, 24,7, 30,12, 30,20,
+                20,20, 15,13, 10,20, 0,20,
+                0,15, 5,12, 0,7
+        });
+
+        for (Point pt : p.getVertices()) {
+            assertTrue(p.contains(pt));
+        }
+        assertTrue(p.contains(1,1));
+        assertTrue(p.contains(28,18));
+        assertTrue(p.contains(15,5));
+        assertTrue(p.contains(24,7));
+        assertTrue(p.contains(15,13));
+        assertFalse(p.contains(15, 14));
+        // lines through the upper spike
+        undirected(p, Point.of(28,18), Point.of(1, 18), false);
+        undirected(p, Point.of(28,18), Point.of(1, 17), false);
+        // just touching the spike
+        undirected(p, Point.of(13,13), Point.of(17,13), true);
+        undirected(p, Point.of(13,13), Point.of(15,13), true);
+        undirected(p, Point.of(13,14), Point.of(17,12), true);
+        // coincident to edge
+        undirected(p, Point.of(30,1), Point.of(30,4), true);
+        undirected(p, Point.of(30,1), Point.of(30,19), false);
+        undirected(p, Point.of(0,1), Point.of(0,19), false);
+        undirected(p, Point.of(0,1), Point.of(1,19), false);
+        undirected(p, Point.of(1,0), Point.of(23,0), false);
+        undirected(p, Point.of(1,20), Point.of(23,20), false);
+    }
+
+    private void undirected(Polygon poly, Point p, Point q, boolean expected) {
+        boolean test1 = poly.containsEdge(p, q);
+        boolean test2 = poly.containsEdge(q, p);
+        assertEquals("edge direct should not matter", test1, test2);
+        assertEquals(expected, test1);
+    }
+
 }
